@@ -2,21 +2,25 @@
 
 A beautifully designed web application displaying the complete list of official public holidays in Myanmar for the year 2026. Built with SvelteKit, featuring bilingual support (English/Myanmar), interactive calendar views, and a modern dark theme.
 
+**🔗 Live Demo:** [myanmar-public-holidays-2026](https://aungmyokyaw.github.io/myanmar-public-holidays-2026/)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
 
-- **17 Official Holidays** - Complete list with 32 total days off
+- **18 Official Holidays** - Complete list with 33 total days off
+- **9-Day Thingyan Festival** - Extended holiday period from April 11-19, 2026
 - **Three View Modes**
   - Calendar view with holiday indicators and tooltips
   - Grid view with detailed holiday cards
   - Timeline view for chronological navigation
-- **Search & Filter** - Real-time search and category filtering (National, Religious, Cultural, International)
+- **Search & Filter** - Real-time search functionality
 - **Bilingual Support** - Full English and Myanmar language translations
 - **Responsive Design** - Optimized for mobile, tablet, and desktop
 - **Dark Theme** - Beautiful gradient backgrounds with smooth animations
-- **SEO Optimized** - Structured data (JSON-LD), Open Graph, and Twitter cards
+- **SEO Optimized** - Open Graph tags and Twitter cards for social media
 - **Static Site Generation** - Fast loading with pre-rendered content
+- **Substitute Working Days** - Display of mandatory work days on weekends
 
 ## Tech Stack
 
@@ -139,16 +143,45 @@ export default {
 };
 ```
 
+## Deployment
+
+This project is automatically deployed to GitHub Pages via GitHub Actions. The deployment workflow is triggered on push to the `master` branch.
+
+### Live URL
+
+- **Production:** https://aungmyokyaw.github.io/myanmar-public-holidays-2026/
+
+### Manual Deployment
+
+```bash
+# Build
+bun run build
+
+# The build output is in the `build/` directory
+# Deploy the contents to your hosting service
+```
+
+### GitHub Pages Setup
+
+The project is configured with `BASE_PATH` environment variable for GitHub Pages deployment. The base path is automatically set to `/myanmar-public-holidays-2026` during build.
+
 ## Holiday Data
 
 Holidays are categorized as follows:
 
-| Category      | Count | Examples                                  |
-| ------------- | ----- | ----------------------------------------- |
-| National      | 7     | Independence Day, Union Day, Martyrs' Day |
-| Religious     | 4     | 4-digit Thingyan, Full Moon Days          |
-| Cultural      | 1     | Kayin New Year                            |
-| International | 5     | Labor Day, Christmas, etc.                |
+| Category      | Count | Examples                                      |
+| ------------- | ----- | --------------------------------------------- |
+| National      | 7     | Independence Day, Union Day, Armed Forces Day |
+| Religious     | 7     | Thingyan, Full Moon Days, Eid celebrations    |
+| Cultural      | 2     | Thingyan Water Festival, Chinese New Year     |
+| International | 2     | New Year's Day, Labour Day, Christmas         |
+
+### Key Highlights
+
+- **Thingyan 2026:** 9-day festival (April 11-19)
+- **Substitute Working Day:** January 10, 2026 (Saturday) for Independence Day
+- **Lunar-Dependent Dates:** Eid al-Adha, Eid al-Fitr, and Deepavali dates are subject to moon sighting
+- **No Kayin New Year:** The holiday does not occur in 2026 (next one in early 2027)
 
 ## License
 
