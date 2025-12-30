@@ -124,18 +124,18 @@ If deploying to a subdirectory, update `svelte.config.js`:
 
 ```js
 export default {
-  kit: {
-    adapter: adapter({
-      pages: 'build',
-      assets: 'build',
-      fallback: '404.html',
-      precompress: false,
-      strict: true
-    }),
-    paths: {
-      base: '/your-repo-name'
-    }
-  }
+	kit: {
+		adapter: adapter({
+			pages: 'build',
+			assets: 'build',
+			fallback: '404.html',
+			precompress: false,
+			strict: true
+		}),
+		paths: {
+			base: '/your-repo-name'
+		}
+	}
 };
 ```
 
@@ -143,12 +143,12 @@ export default {
 
 Holidays are categorized as follows:
 
-| Category | Count | Examples |
-|----------|-------|----------|
-| National | 7 | Independence Day, Union Day, Martyrs' Day |
-| Religious | 4 | 4-digit Thingyan, Full Moon Days |
-| Cultural | 1 | Kayin New Year |
-| International | 5 | Labor Day, Christmas, etc. |
+| Category      | Count | Examples                                  |
+| ------------- | ----- | ----------------------------------------- |
+| National      | 7     | Independence Day, Union Day, Martyrs' Day |
+| Religious     | 4     | 4-digit Thingyan, Full Moon Days          |
+| Cultural      | 1     | Kayin New Year                            |
+| International | 5     | Labor Day, Christmas, etc.                |
 
 ## License
 

@@ -1,6 +1,11 @@
 <script lang="ts">
 	import type { Holiday, SubstituteWorkDay } from '$lib/data/holidays';
-	import { categoryColors, formatDate, getHolidayDays, substituteWorkDays } from '$lib/data/holidays';
+	import {
+		categoryColors,
+		formatDate,
+		getHolidayDays,
+		substituteWorkDays
+	} from '$lib/data/holidays';
 
 	let { holidays, year = 2026 }: { holidays: Holiday[]; year?: number } = $props();
 
@@ -46,9 +51,7 @@
 
 	function isToday(month: number, day: number): boolean {
 		const today = new Date();
-		return (
-			today.getFullYear() === year && today.getMonth() === month && today.getDate() === day
-		);
+		return today.getFullYear() === year && today.getMonth() === month && today.getDate() === day;
 	}
 
 	function isWeekend(dayOfWeek: number): boolean {
@@ -84,30 +87,33 @@
 
 <div class="calendar-container">
 	<!-- Responsive grid: 1 col mobile, 2 cols tablet, 3 cols desktop, 4 cols wide -->
-	<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:gap-6">
+	<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:gap-6">
 		{#each months as monthName, monthIndex}
 			{@const daysInMonth = getDaysInMonth(monthIndex, year)}
 			{@const firstDay = getFirstDayOfMonth(monthIndex, year)}
-			{@const monthHolidays = holidays.filter((h) => new Date(h.startDate).getMonth() === monthIndex)}
+			{@const monthHolidays = holidays.filter(
+				(h) => new Date(h.startDate).getMonth() === monthIndex
+			)}
 			{@const monthSubstituteDays = getMonthSubstituteDays(monthIndex)}
 
 			<div
-				class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/[0.07]"
+				class="rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/[0.07] sm:p-4"
 			>
 				<!-- Month header -->
-				<div class="mb-2 sm:mb-3 flex items-center justify-between">
-					<h3 class="text-base sm:text-lg font-semibold text-white">{monthName}</h3>
+				<div class="mb-2 flex items-center justify-between sm:mb-3">
+					<h3 class="text-base font-semibold text-white sm:text-lg">{monthName}</h3>
 					{#if monthHolidays.length > 0}
 						<span
-							class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-amber-300"
+							class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] font-medium text-amber-300 sm:text-xs"
 						>
-							{monthHolidays.length} {monthHolidays.length === 1 ? 'holiday' : 'holidays'}
+							{monthHolidays.length}
+							{monthHolidays.length === 1 ? 'holiday' : 'holidays'}
 						</span>
 					{/if}
 				</div>
 
 				<!-- Week day headers -->
-				<div class="mb-1 sm:mb-2 grid grid-cols-7 gap-0.5 sm:gap-1">
+				<div class="mb-1 grid grid-cols-7 gap-0.5 sm:mb-2 sm:gap-1">
 					{#each weekDays as day, i}
 						<div
 							class="text-center text-xs font-medium {isWeekend(i)
@@ -138,14 +144,12 @@
 						{@const colors = primaryHoliday ? categoryColors[primaryHoliday.category] : null}
 
 						<button
-							class="group relative aspect-square rounded-md sm:rounded-lg text-xs sm:text-sm transition-all
-								{isToday(monthIndex, day)
-								? 'ring-2 ring-amber-500 ring-offset-1 ring-offset-[#0a0a0f]'
-								: ''}
+							class="group relative aspect-square rounded-md text-xs transition-all sm:rounded-lg sm:text-sm
+								{isToday(monthIndex, day) ? 'ring-2 ring-amber-500 ring-offset-1 ring-offset-[#0a0a0f]' : ''}
 								{hasSubstitute
-								? 'bg-orange-500/30 border border-orange-500/50 hover:scale-110 hover:z-10'
+								? 'border border-orange-500/50 bg-orange-500/30 hover:z-10 hover:scale-110'
 								: hasHoliday
-									? `${colors?.bg} ${colors?.border} border hover:scale-110 hover:z-10`
+									? `${colors?.bg} ${colors?.border} border hover:z-10 hover:scale-110`
 									: isWeekend(dayOfWeek)
 										? 'text-rose-400/60 hover:bg-white/5'
 										: 'text-white/60 hover:bg-white/5'}"
@@ -161,7 +165,7 @@
 						>
 							<span
 								class="flex h-full w-full items-center justify-center {hasSubstitute
-									? 'text-orange-300 font-semibold'
+									? 'font-semibold text-orange-300'
 									: hasHoliday
 										? colors?.text + ' font-semibold'
 										: ''}"
@@ -189,7 +193,7 @@
 							<!-- Multiple holidays indicator -->
 							{#if dayHolidays.length > 1}
 								<span
-									class="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px] font-bold text-white"
+									class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-white/20 text-[10px] font-bold text-white"
 								>
 									{dayHolidays.length}
 								</span>
@@ -218,7 +222,7 @@
 						{/each}
 						{#each monthSubstituteDays as subDay}
 							<div
-								class="flex items-center gap-2 rounded-lg px-2 py-1 text-xs transition-all hover:bg-orange-500/10 bg-orange-500/5"
+								class="flex items-center gap-2 rounded-lg bg-orange-500/5 px-2 py-1 text-xs transition-all hover:bg-orange-500/10"
 							>
 								<span class="text-base">🏢</span>
 								<span class="flex-1 truncate text-orange-300/80">Work Day</span>
@@ -297,7 +301,9 @@
 					{formatDate(selectedSubstituteDay.date)}
 					<span class="ml-2 text-orange-300/30">({selectedSubstituteDay.day})</span>
 				</p>
-				<p class="mt-2 text-xs leading-relaxed text-orange-200/60">{selectedSubstituteDay.reason}</p>
+				<p class="mt-2 text-xs leading-relaxed text-orange-200/60">
+					{selectedSubstituteDay.reason}
+				</p>
 				<div class="mt-2 flex items-center gap-1 text-xs text-orange-400/80">
 					<span>⚠️</span>
 					<span>Office attendance required</span>

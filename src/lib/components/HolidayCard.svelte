@@ -1,6 +1,11 @@
 <script lang="ts">
 	import type { Holiday } from '$lib/data/holidays';
-	import { categoryColors, categoryLabels, formatDateRange, getHolidayDays } from '$lib/data/holidays';
+	import {
+		categoryColors,
+		categoryLabels,
+		formatDateRange,
+		getHolidayDays
+	} from '$lib/data/holidays';
 
 	let { holiday }: { holiday: Holiday } = $props();
 
@@ -26,18 +31,18 @@
 	<div class="relative z-10">
 		<!-- Category badge -->
 		<span
-			class="inline-block rounded-full border px-3 py-1 text-xs font-medium uppercase tracking-wider {colors.border} {colors.text}"
+			class="inline-block rounded-full border px-3 py-1 text-xs font-medium tracking-wider uppercase {colors.border} {colors.text}"
 		>
 			{categoryLabels[holiday.category]}
 		</span>
 
 		<!-- Holiday name -->
-		<h3 class="mt-3 text-lg font-semibold text-white leading-tight">
+		<h3 class="mt-3 text-lg leading-tight font-semibold text-white">
 			{holiday.name}
 		</h3>
 
 		{#if holiday.nameMyanmar}
-			<p class="mt-1 font-myanmar text-sm text-white/60">
+			<p class="font-myanmar mt-1 text-sm text-white/60">
 				{holiday.nameMyanmar}
 			</p>
 		{/if}
