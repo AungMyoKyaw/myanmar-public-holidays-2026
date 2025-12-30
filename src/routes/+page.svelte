@@ -54,17 +54,73 @@
 </script>
 
 <svelte:head>
+	<!-- Primary Meta Tags -->
 	<title>Myanmar Public Holidays 2026 | မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ</title>
+	<meta name="title" content="Myanmar Public Holidays 2026 | မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ" />
 	<meta
 		name="description"
-		content="Complete list of 32 official public holidays in Myanmar for 2026, including Thingyan, Independence Day, and religious festivals."
+		content="Complete list of 32 official public holidays in Myanmar for 2026. Plan your year with Thingyan (9 days), Independence Day, Union Day, Thadingyut, and more. Includes calendar view, filtering, and bilingual support."
 	/>
+	<meta name="keywords" content="Myanmar holidays 2026, Myanmar public holidays, Thingyan 2026, Burma holidays, မြန်မာရုံးပိတ်ရက်, သင်္ကြန်, Independence Day Myanmar, Union Day, Thadingyut, Buddhist holidays" />
+	<meta name="author" content="Myanmar Holidays" />
+	<meta name="robots" content="index, follow" />
+	<link rel="canonical" href="https://myanmar-holidays-2026.vercel.app" />
+
+	<!-- Open Graph / Facebook -->
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://myanmar-holidays-2026.vercel.app" />
+	<meta property="og:title" content="Myanmar Public Holidays 2026 🇲🇲" />
+	<meta property="og:description" content="Plan your year with the complete list of 32 official public holidays in Myanmar for 2026. Features calendar view, Thingyan dates (Apr 11-19), and bilingual support." />
+	<meta property="og:image" content="https://myanmar-holidays-2026.vercel.app/og-image.png" />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+	<meta property="og:locale" content="en_US" />
+	<meta property="og:locale:alternate" content="my_MM" />
+	<meta property="og:site_name" content="Myanmar Holidays 2026" />
+
+	<!-- Twitter -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://myanmar-holidays-2026.vercel.app" />
+	<meta name="twitter:title" content="Myanmar Public Holidays 2026 🇲🇲" />
+	<meta name="twitter:description" content="Plan your year with the complete list of 32 official public holidays in Myanmar for 2026. Features calendar view, Thingyan dates (Apr 11-19), and bilingual support." />
+	<meta name="twitter:image" content="https://myanmar-holidays-2026.vercel.app/og-image.png" />
+
+	<!-- Mobile & PWA -->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+	<meta name="theme-color" content="#0a0a0f" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+	<meta name="apple-mobile-web-app-title" content="MM Holidays 2026" />
+
+	<!-- Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
 		href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap"
 		rel="stylesheet"
 	/>
+
+	<!-- Structured Data for SEO -->
+	{@html `<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "WebApplication",
+		"name": "Myanmar Public Holidays 2026",
+		"description": "Complete list of 32 official public holidays in Myanmar for 2026",
+		"url": "https://myanmar-holidays-2026.vercel.app",
+		"applicationCategory": "UtilitiesApplication",
+		"operatingSystem": "Any",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		},
+		"author": {
+			"@type": "Organization",
+			"name": "Myanmar Holidays"
+		}
+	}
+	</script>`}
 </svelte:head>
 
 <div class="min-h-screen bg-[#0a0a0f] text-white">

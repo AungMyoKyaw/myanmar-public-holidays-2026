@@ -64,21 +64,22 @@
 </script>
 
 <div class="calendar-container">
-	<div class="grid gap-6 lg:grid-cols-3 md:grid-cols-2 grid-cols-1">
+	<!-- Responsive grid: 1 col mobile, 2 cols tablet, 3 cols desktop, 4 cols wide -->
+	<div class="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:gap-6">
 		{#each months as monthName, monthIndex}
 			{@const daysInMonth = getDaysInMonth(monthIndex, year)}
 			{@const firstDay = getFirstDayOfMonth(monthIndex, year)}
 			{@const monthHolidays = holidays.filter((h) => new Date(h.startDate).getMonth() === monthIndex)}
 
 			<div
-				class="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/[0.07]"
+				class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/[0.07]"
 			>
 				<!-- Month header -->
-				<div class="mb-3 flex items-center justify-between">
-					<h3 class="text-lg font-semibold text-white">{monthName}</h3>
+				<div class="mb-2 sm:mb-3 flex items-center justify-between">
+					<h3 class="text-base sm:text-lg font-semibold text-white">{monthName}</h3>
 					{#if monthHolidays.length > 0}
 						<span
-							class="rounded-full bg-amber-500/20 px-2 py-0.5 text-xs font-medium text-amber-300"
+							class="rounded-full bg-amber-500/20 px-2 py-0.5 text-[10px] sm:text-xs font-medium text-amber-300"
 						>
 							{monthHolidays.length} {monthHolidays.length === 1 ? 'holiday' : 'holidays'}
 						</span>
@@ -86,7 +87,7 @@
 				</div>
 
 				<!-- Week day headers -->
-				<div class="mb-2 grid grid-cols-7 gap-1">
+				<div class="mb-1 sm:mb-2 grid grid-cols-7 gap-0.5 sm:gap-1">
 					{#each weekDays as day, i}
 						<div
 							class="text-center text-xs font-medium {isWeekend(i)
@@ -99,7 +100,7 @@
 				</div>
 
 				<!-- Calendar grid -->
-				<div class="grid grid-cols-7 gap-1">
+				<div class="grid grid-cols-7 gap-0.5 sm:gap-1">
 					<!-- Empty cells for days before first of month -->
 					{#each Array(firstDay) as _, i}
 						<div class="aspect-square"></div>
@@ -115,7 +116,7 @@
 						{@const colors = primaryHoliday ? categoryColors[primaryHoliday.category] : null}
 
 						<button
-							class="group relative aspect-square rounded-lg text-sm transition-all
+							class="group relative aspect-square rounded-md sm:rounded-lg text-xs sm:text-sm transition-all
 								{isToday(monthIndex, day)
 								? 'ring-2 ring-amber-500 ring-offset-1 ring-offset-[#0a0a0f]'
 								: ''}
