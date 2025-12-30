@@ -3,78 +3,79 @@
 	import CalendarView from '$lib/components/CalendarView.svelte';
 	import {
 		holidays,
-		groupHolidaysByMonth,
 		getTotalHolidayDays,
-		categoryLabels,
-		categoryColors,
 		substituteWorkDays,
 		formatDate,
 		type Holiday
 	} from '$lib/data/holidays';
+	import { SvelteMap } from 'svelte/reactivity';
+	import {
+		Search,
+		CalendarDays,
+		LayoutGrid,
+		List,
+		Building2,
+		Droplets,
+		Moon,
+		CalendarCheck,
+		Sparkles,
+		Heart,
+		TreePine,
+		X
+	} from 'lucide-svelte';
 
 	let searchQuery = $state('');
-	let selectedCategory = $state<Holiday['category'] | 'all'>('all');
 	let viewMode = $state<'grid' | 'timeline' | 'calendar'>('calendar');
 
-	const categories: (Holiday['category'] | 'all')[] = [
-		'all',
-		'national',
-		'religious',
-		'cultural',
-		'international'
-	];
-
+	// Filter holidays based on search query
 	const filteredHolidays = $derived(
-		holidays.filter((h) => {
+		holidays.filter((holiday) => {
+			// Search filter
 			const matchesSearch =
 				searchQuery === '' ||
-				h.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				h.nameMyanmar?.includes(searchQuery) ||
-				h.description?.toLowerCase().includes(searchQuery.toLowerCase());
-			const matchesCategory = selectedCategory === 'all' || h.category === selectedCategory;
-			return matchesSearch && matchesCategory;
+				holiday.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				holiday.nameMyanmar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+				holiday.description?.toLowerCase().includes(searchQuery.toLowerCase());
+
+			return matchesSearch;
 		})
 	);
 
-	const groupedHolidays = $derived(
-		(() => {
-			const grouped = new Map<string, Holiday[]>();
-			filteredHolidays.forEach((holiday) => {
-				const date = new Date(holiday.startDate);
-				const month = date.toLocaleDateString('en-US', { month: 'long' });
-				if (!grouped.has(month)) {
-					grouped.set(month, []);
-				}
-				grouped.get(month)!.push(holiday);
-			});
-			return grouped;
-		})()
-	);
+	// Group filtered holidays by month
+	const holidaysByMonth = $derived.by(() => {
+		const grouped = new SvelteMap<string, Holiday[]>();
+		filteredHolidays.forEach((holiday) => {
+			const date = new Date(holiday.startDate);
+			const month = date.toLocaleDateString('en-US', { month: 'long' });
+			if (!grouped.has(month)) {
+				grouped.set(month, []);
+			}
+			grouped.get(month)!.push(holiday);
+		});
+		return grouped;
+	});
 
 	const stats = $derived({
 		total: holidays.length,
-		totalDays: getTotalHolidayDays(),
-		national: holidays.filter((h) => h.category === 'national').length,
-		religious: holidays.filter((h) => h.category === 'religious').length,
-		cultural: holidays.filter((h) => h.category === 'cultural').length,
-		international: holidays.filter((h) => h.category === 'international').length
+		totalDays: getTotalHolidayDays()
 	});
+
+	function clearSearch() {
+		searchQuery = '';
+	}
 </script>
 
 <svelte:head>
 	<!-- Primary Meta Tags -->
-	<title>Myanmar Public Holidays 2026 | မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ</title>
-	<meta
-		name="title"
-		content="Myanmar Public Holidays 2026 | မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ"
-	/>
+	<title>Myanmar Public Holidays 2026 🇲🇲 | 18 Holidays · 33 Days Off</title>
+	<meta name="title" content="Myanmar Public Holidays 2026 🇲🇲 | 18 Holidays · 33 Days Off" />
 	<meta
 		name="description"
-		content="Complete list of 32 official public holidays in Myanmar for 2026. Plan your year with Thingyan (9 days), Independence Day, Union Day, Thadingyut, and more. Includes calendar view, filtering, and bilingual support."
+		content="📅 Complete calendar of Myanmar's official public holidays in 2026. Featuring 9-day Thingyan festival, Union Day, Independence Day & more. Interactive calendar view with search. မြန်မာ့ရုံးပိတ်ရက်များ ၂၀၂၆"
 	/>
 	<meta
 		name="keywords"
-		content="Myanmar holidays 2026, Myanmar public holidays, Thingyan 2026, Burma holidays, မြန်မာရုံးပိတ်ရက်, သင်္ကြန်, Independence Day Myanmar, Union Day, Thadingyut, Buddhist holidays"
+		content="Myanmar holidays 2026, Burma holidays, Myanmar public holidays, Thingyan 2026, မြန်မာ့ရုံးပိတ်ရက်, Independence Day Myanmar, Union Day, Buddhist holidays Myanmar, Myanmar calendar 2026"
 	/>
 	<meta name="author" content="Myanmar Holidays" />
 	<meta name="robots" content="index, follow" />
@@ -82,279 +83,208 @@
 
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website" />
-	<meta property="og:url" content="https://myanmar-holidays-2026.vercel.app" />
-	<meta property="og:title" content="Myanmar Public Holidays 2026 🇲🇲" />
+	<meta property="og:url" content="https://myanmar-holidays-2026.vercel.app/" />
+	<meta property="og:title" content="🇲🇲 Myanmar Public Holidays 2026 | Plan Your Year" />
 	<meta
 		property="og:description"
-		content="Plan your year with the complete list of 32 official public holidays in Myanmar for 2026. Features calendar view, Thingyan dates (Apr 11-19), and bilingual support."
+		content="📅 18 official holidays · 33 days off · 9-day Thingyan festival (Apr 11-19). Interactive calendar with bilingual support. Perfect for planning your 2026! 🎉"
 	/>
 	<meta property="og:image" content="https://myanmar-holidays-2026.vercel.app/og-image.png" />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
+	<meta property="og:image:alt" content="Myanmar Public Holidays 2026 - 18 Holidays, 33 Days Off" />
 	<meta property="og:locale" content="en_US" />
 	<meta property="og:locale:alternate" content="my_MM" />
 	<meta property="og:site_name" content="Myanmar Holidays 2026" />
 
-	<!-- Twitter -->
+	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta name="twitter:url" content="https://myanmar-holidays-2026.vercel.app" />
-	<meta name="twitter:title" content="Myanmar Public Holidays 2026 🇲🇲" />
+	<meta name="twitter:url" content="https://myanmar-holidays-2026.vercel.app/" />
+	<meta
+		name="twitter:title"
+		content="🇲🇲 Myanmar Public Holidays 2026 | 18 Holidays · 33 Days Off"
+	/>
 	<meta
 		name="twitter:description"
-		content="Plan your year with the complete list of 32 official public holidays in Myanmar for 2026. Features calendar view, Thingyan dates (Apr 11-19), and bilingual support."
+		content="📅 Complete calendar of Myanmar's 2026 holidays. 9-day Thingyan festival, interactive calendar view, bilingual support. Plan your year now! 🎉"
 	/>
 	<meta name="twitter:image" content="https://myanmar-holidays-2026.vercel.app/og-image.png" />
+	<meta name="twitter:image:alt" content="Myanmar Public Holidays 2026 Calendar" />
+	<meta name="twitter:creator" content="@myanmar_holidays" />
+
+	<!-- Additional SEO -->
+	<meta name="application-name" content="Myanmar Holidays 2026" />
+	<meta name="apple-mobile-web-app-title" content="MM Holidays 2026" />
+	<meta name="format-detection" content="telephone=no" />
 
 	<!-- Mobile & PWA -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
-	<meta name="theme-color" content="#0a0a0f" />
+	<meta name="theme-color" content="#050507" />
+	<meta name="mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<meta name="apple-mobile-web-app-title" content="MM Holidays 2026" />
 
-	<!-- Fonts -->
+	<!-- Premium Fonts -->
 	<link rel="preconnect" href="https://fonts.googleapis.com" />
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
 	<link
-		href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap"
+		href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&family=Noto+Sans+Myanmar:wght@400;500;600;700&display=swap"
 		rel="stylesheet"
 	/>
-
-	<!-- Structured Data for SEO -->
-	{@html `<script type="application/ld+json">
-	{
-		"@context": "https://schema.org",
-		"@type": "WebApplication",
-		"name": "Myanmar Public Holidays 2026",
-		"description": "Complete list of 32 official public holidays in Myanmar for 2026",
-		"url": "https://myanmar-holidays-2026.vercel.app",
-		"applicationCategory": "UtilitiesApplication",
-		"operatingSystem": "Any",
-		"offers": {
-			"@type": "Offer",
-			"price": "0",
-			"priceCurrency": "USD"
-		},
-		"author": {
-			"@type": "Organization",
-			"name": "Myanmar Holidays"
-		}
-	}
-	</script>`}
 </svelte:head>
 
-<div class="min-h-screen bg-[#0a0a0f] text-white">
-	<!-- Animated background -->
+<div class="noise-overlay mesh-bg min-h-screen text-white">
+	<!-- Animated background orbs -->
 	<div class="pointer-events-none fixed inset-0 overflow-hidden">
 		<div
-			class="animate-pulse-slow absolute -top-1/2 -left-1/2 h-full w-full rounded-full bg-gradient-to-br from-amber-900/20 via-transparent to-transparent blur-3xl"
+			class="absolute -top-1/4 -left-1/4 h-[600px] w-[600px] animate-pulse-glow rounded-full bg-gradient-to-br from-amber-900/20 via-transparent to-transparent blur-[100px]"
 		></div>
 		<div
-			class="animate-pulse-slow absolute -right-1/2 -bottom-1/2 h-full w-full rounded-full bg-gradient-to-tl from-rose-900/20 via-transparent to-transparent blur-3xl"
+			class="absolute -right-1/4 -bottom-1/4 h-[700px] w-[700px] animate-pulse-glow rounded-full bg-gradient-to-tl from-rose-900/15 via-transparent to-transparent blur-[120px]"
 			style="animation-delay: 2s;"
 		></div>
 		<div
-			class="animate-float absolute top-1/4 right-1/4 h-96 w-96 rounded-full bg-gradient-to-br from-violet-900/10 to-transparent blur-3xl"
+			class="absolute top-1/3 right-1/4 h-[400px] w-[400px] animate-float rounded-full bg-gradient-to-br from-violet-900/10 to-transparent blur-[80px]"
+			style="animation-delay: 1s;"
 		></div>
 	</div>
 
 	<!-- Header -->
-	<header class="relative z-10 border-b border-white/5">
-		<div class="mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-8 lg:px-8">
-			<div class="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-end lg:justify-between">
-				<div>
-					<div class="mb-2 flex items-center gap-2 sm:mb-3 sm:gap-3">
-						<span class="text-3xl sm:text-4xl">🇲🇲</span>
+	<header class="relative z-10 border-b border-white/[0.06]">
+		<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+			<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+				<!-- Title Section -->
+				<div class="animate-fade-in-up opacity-0">
+					<!-- Badge -->
+					<div class="mb-4 flex items-center gap-3">
 						<div
-							class="h-6 w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent sm:h-8"
+							class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 text-amber-400 ring-1 ring-amber-500/20"
+						>
+							<svg viewBox="0 0 36 36" class="h-5 w-5" fill="currentColor">
+								<path
+									d="M32.5 5H28V1a1 1 0 00-2 0v4H10V1a1 1 0 00-2 0v4H3.5C1.57 5 0 6.57 0 8.5v24C0 34.43 1.57 36 3.5 36h29c1.93 0 3.5-1.57 3.5-3.5v-24C36 6.57 34.43 5 32.5 5zM34 32.5c0 .83-.67 1.5-1.5 1.5h-29C2.67 34 2 33.33 2 32.5V14h32v18.5zM34 12H2V8.5C2 7.67 2.67 7 3.5 7H8v2a1 1 0 002 0V7h16v2a1 1 0 002 0V7h4.5c.83 0 1.5.67 1.5 1.5V12z"
+								/>
+							</svg>
+						</div>
+						<div
+							class="h-6 w-px bg-gradient-to-b from-transparent via-amber-500/30 to-transparent"
 						></div>
-						<span
-							class="text-[10px] font-medium tracking-[0.2em] text-amber-500/80 uppercase sm:text-xs sm:tracking-[0.3em]"
-							>Official Calendar</span
+						<span class="text-[11px] font-medium tracking-[0.25em] text-amber-500/70 uppercase"
+							>Official Calendar 2026</span
 						>
 					</div>
-					<h1
-						class="font-outfit text-2xl font-bold tracking-tight sm:text-4xl lg:text-5xl xl:text-6xl"
-					>
-						<span
-							class="bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent"
-						>
-							Myanmar Holidays
-						</span>
-						<span
-							class="ml-2 inline-flex items-center rounded-lg bg-gradient-to-r from-amber-500 to-rose-500 px-2 py-0.5 text-lg font-bold text-white shadow-lg shadow-amber-500/25 sm:ml-3 sm:rounded-xl sm:px-4 sm:py-1 sm:text-2xl"
-						>
-							2026
-						</span>
+
+					<!-- Main Title -->
+					<h1 class="font-display text-4xl tracking-tight sm:text-5xl lg:text-6xl">
+						<span class="text-gradient-gold animate-shimmer bg-[length:200%_auto]"> Myanmar </span>
+						<span class="text-white/90"> Holidays</span>
 					</h1>
-					<p class="font-myanmar mt-2 text-sm text-white/50 sm:mt-3 sm:text-lg">
+					<p class="font-myanmar mt-3 text-base text-white/40 sm:text-lg">
 						မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ ၂၀၂၆
 					</p>
 				</div>
 
-				<!-- Stats cards -->
-				<div class="flex flex-wrap gap-2 sm:gap-3">
-					<div
-						class="group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-sm transition-all hover:border-amber-500/30 hover:bg-white/10 sm:rounded-2xl sm:px-5 sm:py-4"
-					>
-						<div
-							class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
-						></div>
-						<div class="relative">
-							<div class="text-2xl font-bold text-white sm:text-3xl">{stats.total}</div>
-							<div
-								class="text-[10px] font-medium tracking-wider text-white/40 uppercase sm:text-xs"
-							>
-								Holidays
-							</div>
+				<!-- Stats Cards -->
+				<div class="stagger-2 flex animate-fade-in-up flex-wrap gap-3 opacity-0">
+					<div class="card-elevated group flex flex-col rounded-2xl px-5 py-4">
+						<div class="flex items-baseline gap-1">
+							<span class="text-3xl font-semibold text-white">{stats.total}</span>
+							<span class="text-sm text-white/30">events</span>
 						</div>
+						<span class="mt-1 text-xs font-medium tracking-wider text-white/40 uppercase"
+							>Holidays</span
+						>
 					</div>
-					<div
-						class="group relative overflow-hidden rounded-xl border border-white/10 bg-white/5 px-3 py-2 backdrop-blur-sm transition-all hover:border-rose-500/30 hover:bg-white/10 sm:rounded-2xl sm:px-5 sm:py-4"
-					>
-						<div
-							class="absolute inset-0 bg-gradient-to-br from-rose-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"
-						></div>
-						<div class="relative">
-							<div class="text-2xl font-bold text-white sm:text-3xl">{stats.totalDays}</div>
-							<div
-								class="text-[10px] font-medium tracking-wider text-white/40 uppercase sm:text-xs"
-							>
-								Days Off
-							</div>
+					<div class="card-elevated group flex flex-col rounded-2xl px-5 py-4">
+						<div class="flex items-baseline gap-1">
+							<span class="text-3xl font-semibold text-white">{stats.totalDays}</span>
+							<span class="text-sm text-white/30">total</span>
 						</div>
+						<span class="mt-1 text-xs font-medium tracking-wider text-white/40 uppercase"
+							>Days Off</span
+						>
 					</div>
 				</div>
 			</div>
 		</div>
 	</header>
 
-	<main class="relative z-10 mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
-		<!-- Filters -->
+	<main class="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+		<!-- Filters Section -->
 		<div
-			class="mb-6 flex flex-col gap-3 sm:mb-10 sm:gap-4 lg:flex-row lg:items-center lg:justify-between"
+			class="stagger-3 mb-8 flex animate-fade-in-up flex-col gap-4 opacity-0 sm:mb-12 lg:flex-row lg:items-center lg:justify-between"
 		>
 			<!-- Search -->
-			<div class="relative w-full lg:max-w-md lg:flex-1">
-				<svg
-					class="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-white/30 sm:left-4 sm:h-5 sm:w-5"
-					fill="none"
-					viewBox="0 0 24 24"
-					stroke="currentColor"
-				>
-					<path
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						stroke-width="2"
-						d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-					/>
-				</svg>
+			<div class="relative w-full lg:max-w-md">
+				<Search
+					size={18}
+					strokeWidth={1.5}
+					class="absolute top-1/2 left-4 -translate-y-1/2 text-white/25"
+				/>
 				<input
 					type="text"
 					bind:value={searchQuery}
 					placeholder="Search holidays..."
-					class="w-full rounded-lg border border-white/10 bg-white/5 py-2.5 pr-4 pl-10 text-sm text-white placeholder-white/30 backdrop-blur-sm transition-all focus:border-amber-500/50 focus:bg-white/10 focus:ring-2 focus:ring-amber-500/20 focus:outline-none sm:rounded-xl sm:py-3 sm:pl-12 sm:text-base"
+					class="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] py-3 pr-10 pl-12 text-sm text-white placeholder-white/30 backdrop-blur-sm transition-all focus:border-amber-500/40 focus:bg-white/[0.06] focus:ring-2 focus:ring-amber-500/10 focus:outline-none"
 				/>
+				{#if searchQuery}
+					<button
+						onclick={clearSearch}
+						class="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-1 text-white/30 transition-colors hover:bg-white/10 hover:text-white/60"
+					>
+						<X size={16} strokeWidth={2} />
+					</button>
+				{/if}
 			</div>
 
-			<!-- Category filters & View toggle wrapper -->
-			<div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
-				<!-- Category filters -->
-				<div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
-					{#each categories as category}
-						{@const isActive = selectedCategory === category}
-						{@const colors = category === 'all' ? null : categoryColors[category]}
-						<button
-							onclick={() => (selectedCategory = category)}
-							class="rounded-full border px-2.5 py-1.5 text-xs font-medium transition-all sm:px-4 sm:py-2 sm:text-sm {isActive
-								? 'border-amber-500/50 bg-amber-500/20 text-amber-300'
-								: 'border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:bg-white/10 hover:text-white'}"
-						>
-							{category === 'all' ? 'All' : categoryLabels[category]}
-							<span class="hidden sm:inline">
-								{#if category !== 'all'}
-									<span class="ml-1 text-xs opacity-60">({stats[category]})</span>
-								{/if}
-							</span>
-						</button>
-					{/each}
-				</div>
-
-				<!-- View toggle -->
-				<div
-					class="flex items-center gap-1 self-start rounded-lg border border-white/10 bg-white/5 p-1 sm:self-auto sm:rounded-xl"
+			<!-- View toggle -->
+			<div
+				class="flex items-center gap-1 rounded-xl border border-white/[0.08] bg-white/[0.03] p-1"
+			>
+				<button
+					onclick={() => (viewMode = 'calendar')}
+					class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all {viewMode ===
+					'calendar'
+						? 'bg-white/10 text-white'
+						: 'text-white/40 hover:text-white/70'}"
+					title="Calendar View"
 				>
-					<button
-						onclick={() => (viewMode = 'calendar')}
-						class="rounded-md p-1.5 transition-all sm:rounded-lg sm:p-2 {viewMode === 'calendar'
-							? 'bg-white/10 text-white'
-							: 'text-white/40 hover:text-white'}"
-						title="Calendar View"
-					>
-						<svg
-							class="h-4 w-4 sm:h-5 sm:w-5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-							/>
-						</svg>
-					</button>
-					<button
-						onclick={() => (viewMode = 'grid')}
-						class="rounded-md p-1.5 transition-all sm:rounded-lg sm:p-2 {viewMode === 'grid'
-							? 'bg-white/10 text-white'
-							: 'text-white/40 hover:text-white'}"
-						title="Grid View"
-					>
-						<svg
-							class="h-4 w-4 sm:h-5 sm:w-5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"
-							/>
-						</svg>
-					</button>
-					<button
-						onclick={() => (viewMode = 'timeline')}
-						class="rounded-md p-1.5 transition-all sm:rounded-lg sm:p-2 {viewMode === 'timeline'
-							? 'bg-white/10 text-white'
-							: 'text-white/40 hover:text-white'}"
-						title="Timeline View"
-					>
-						<svg
-							class="h-4 w-4 sm:h-5 sm:w-5"
-							fill="none"
-							viewBox="0 0 24 24"
-							stroke="currentColor"
-						>
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="2"
-								d="M4 6h16M4 10h16M4 14h16M4 18h16"
-							/>
-						</svg>
-					</button>
-				</div>
+					<CalendarDays size={16} strokeWidth={1.5} />
+					<span class="hidden sm:inline">Calendar</span>
+				</button>
+				<button
+					onclick={() => (viewMode = 'grid')}
+					class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all {viewMode ===
+					'grid'
+						? 'bg-white/10 text-white'
+						: 'text-white/40 hover:text-white/70'}"
+					title="Grid View"
+				>
+					<LayoutGrid size={16} strokeWidth={1.5} />
+					<span class="hidden sm:inline">Grid</span>
+				</button>
+				<button
+					onclick={() => (viewMode = 'timeline')}
+					class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all {viewMode ===
+					'timeline'
+						? 'bg-white/10 text-white'
+						: 'text-white/40 hover:text-white/70'}"
+					title="Timeline View"
+				>
+					<List size={16} strokeWidth={1.5} />
+					<span class="hidden sm:inline">Timeline</span>
+				</button>
 			</div>
 		</div>
 
 		<!-- Results count -->
 		{#if filteredHolidays.length !== holidays.length && viewMode !== 'calendar'}
-			<div class="mb-4 text-xs text-white/40 sm:mb-6 sm:text-sm">
-				Showing {filteredHolidays.length} of {holidays.length} holidays
+			<div class="mb-6 flex animate-fade-in items-center gap-2 text-sm text-white/40 opacity-0">
+				<span>Showing</span>
+				<span class="font-medium text-white/60">{filteredHolidays.length}</span>
+				<span>of</span>
+				<span class="font-medium text-white/60">{holidays.length}</span>
+				<span>holidays</span>
 			</div>
 		{/if}
 
@@ -364,38 +294,41 @@
 		{:else if viewMode === 'grid'}
 			<!-- Grid View -->
 			<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-				{#each filteredHolidays as holiday, i}
-					<div style="animation: fadeInUp 0.5s ease-out {i * 0.05}s both;">
+				{#each filteredHolidays as holiday, i (holiday.id)}
+					<div class="animate-fade-in-up opacity-0" style="animation-delay: {i * 50}ms">
 						<HolidayCard {holiday} />
 					</div>
 				{/each}
 			</div>
 		{:else}
 			<!-- Timeline View -->
-			<div class="space-y-12">
-				{#each groupedHolidays as [month, monthHolidays], monthIndex}
-					<section style="animation: fadeInUp 0.5s ease-out {monthIndex * 0.1}s both;">
-						<div
-							class="sticky top-0 z-20 -mx-4 mb-6 bg-gradient-to-r from-[#0a0a0f] via-[#0a0a0f]/95 to-transparent px-4 py-3 backdrop-blur-xl"
-						>
-							<h2 class="inline-flex items-center gap-3 text-2xl font-bold">
-								<span class="h-px w-8 bg-gradient-to-r from-amber-500 to-transparent"></span>
-								{month}
-								<span class="text-sm font-normal text-white/30"
-									>({monthHolidays.length}
-									{monthHolidays.length === 1 ? 'holiday' : 'holidays'})</span
+			<div class="space-y-16">
+				{#each Array.from(holidaysByMonth.entries()) as [month, monthHolidays], monthIndex (month)}
+					<section
+						class="animate-fade-in-up opacity-0"
+						style="animation-delay: {monthIndex * 100}ms"
+					>
+						<div class="sticky top-0 z-20 -mx-4 mb-8 bg-[#050507]/90 px-4 py-4 backdrop-blur-xl">
+							<h2 class="font-display flex items-center gap-4 text-2xl">
+								<span class="h-px w-12 bg-gradient-to-r from-amber-500/50 to-transparent"></span>
+								<span class="text-white/90">{month}</span>
+								<span
+									class="rounded-lg bg-white/[0.06] px-3 py-1 text-sm font-normal text-white/40"
 								>
+									{monthHolidays.length}
+									{monthHolidays.length === 1 ? 'holiday' : 'holidays'}
+								</span>
 							</h2>
 						</div>
-						<div class="relative ml-4 border-l border-white/10 pl-8">
-							{#each monthHolidays as holiday, i}
+						<div class="relative ml-6 border-l border-white/[0.08] pl-10">
+							{#each monthHolidays as holiday, i (holiday.id)}
 								<div
-									class="relative mb-6 last:mb-0"
-									style="animation: fadeInLeft 0.4s ease-out {i * 0.1}s both;"
+									class="relative mb-8 animate-slide-in-left opacity-0 last:mb-0"
+									style="animation-delay: {i * 80}ms"
 								>
 									<!-- Timeline dot -->
 									<div
-										class="absolute top-6 -left-[41px] h-3 w-3 rounded-full border-2 border-amber-500 bg-[#0a0a0f]"
+										class="absolute top-8 -left-[43px] h-3 w-3 rounded-full border-2 border-amber-500/60 bg-[#050507]"
 									></div>
 									<HolidayCard {holiday} />
 								</div>
@@ -408,204 +341,168 @@
 
 		<!-- Empty state -->
 		{#if filteredHolidays.length === 0}
-			<div class="flex flex-col items-center justify-center py-20 text-center">
-				<div class="mb-4 text-6xl">🔍</div>
-				<h3 class="text-xl font-semibold text-white/80">No holidays found</h3>
-				<p class="mt-2 text-white/40">Try adjusting your search or filter criteria</p>
+			<div
+				class="flex animate-scale-in flex-col items-center justify-center py-24 text-center opacity-0"
+			>
+				<div
+					class="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/[0.04] text-white/20"
+				>
+					<Search size={40} strokeWidth={1} />
+				</div>
+				<h3 class="font-display text-xl text-white/70">No holidays found</h3>
+				<p class="mt-2 text-sm text-white/40">Try adjusting your search criteria</p>
 				<button
 					onclick={() => {
 						searchQuery = '';
-						selectedCategory = 'all';
 					}}
-					class="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/20"
+					class="mt-6 flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/15"
 				>
-					Clear filters
+					<X size={16} strokeWidth={2} />
+					Clear search
 				</button>
 			</div>
 		{/if}
 
 		<!-- Substitute Working Days Section -->
 		{#if substituteWorkDays.length > 0}
-			<section class="mt-16">
-				<h2 class="mb-6 flex items-center gap-3 text-xl font-bold">
-					<span
-						class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/20 text-orange-400"
+			<section class="mt-20 animate-fade-in-up opacity-0" style="animation-delay: 200ms">
+				<div class="mb-8 flex items-center gap-4">
+					<div
+						class="flex h-12 w-12 items-center justify-center rounded-xl bg-orange-500/15 text-orange-400"
 					>
-						🏢
-					</span>
-					Substitute Working Days
-					<span
-						class="ml-2 rounded-full bg-orange-500/20 px-3 py-1 text-sm font-normal text-orange-300"
-					>
-						{substituteWorkDays.length} days
-					</span>
-				</h2>
-				<p class="mb-4 text-sm text-white/50">
+						<Building2 size={24} strokeWidth={1.5} />
+					</div>
+					<div>
+						<h2 class="font-display text-xl text-white/90 sm:text-2xl">Substitute Working Days</h2>
+						<p class="mt-1 text-sm text-white/40">
+							{substituteWorkDays.length} day{substituteWorkDays.length > 1 ? 's' : ''} requiring office
+							attendance
+						</p>
+					</div>
+				</div>
+
+				<p class="mb-6 text-sm leading-relaxed text-white/50">
 					These are days when you <strong class="text-orange-300">must attend office</strong> even though
 					they fall on weekends. They substitute for public holidays.
 				</p>
-				<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-					{#each substituteWorkDays as subDay}
+
+				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+					{#each substituteWorkDays as subDay, i (subDay.id)}
 						<div
-							class="rounded-2xl border border-orange-500/30 bg-orange-500/10 p-4 transition-all hover:border-orange-500/50 hover:bg-orange-500/15"
+							class="card-elevated group animate-fade-in-up rounded-2xl border-orange-500/20 p-5 opacity-0 transition-all hover:border-orange-500/30"
+							style="animation-delay: {i * 100 + 300}ms"
 						>
-							<div class="flex items-center gap-3">
+							<div class="flex items-center gap-4">
 								<div
-									class="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-orange-500/20"
+									class="flex h-14 w-14 flex-col items-center justify-center rounded-xl bg-orange-500/15"
 								>
-									<span class="text-lg font-bold text-orange-300"
+									<span class="text-xl font-semibold text-orange-300"
 										>{formatDate(subDay.date).split(' ')[1]}</span
 									>
-									<span class="text-[10px] text-orange-400/70"
+									<span class="text-[10px] font-medium text-orange-400/60 uppercase"
 										>{formatDate(subDay.date).split(' ')[0]}</span
 									>
 								</div>
 								<div class="flex-1">
-									<h3 class="font-semibold text-orange-200">{subDay.day} - Work Day</h3>
-									<p class="text-xs text-orange-300/60">{subDay.reason}</p>
+									<h3 class="font-medium text-orange-200">{subDay.day} - Work Day</h3>
+									<p class="mt-0.5 text-xs text-orange-300/50">{subDay.reason}</p>
 								</div>
 							</div>
-							<p class="font-myanmar mt-2 text-xs text-orange-300/50">{subDay.reasonMyanmar}</p>
+							<p class="font-myanmar mt-3 text-xs text-orange-300/40">{subDay.reasonMyanmar}</p>
 						</div>
 					{/each}
 				</div>
 			</section>
 		{/if}
 
-		<!-- Important Notes -->
-		<section class="mt-16">
-			<h2 class="mb-6 flex items-center gap-3 text-xl font-bold">
-				<span
-					class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20 text-amber-400"
+		<!-- Important Notes Section -->
+		<section class="mt-20 animate-fade-in-up opacity-0" style="animation-delay: 300ms">
+			<div class="mb-8 flex items-center gap-4">
+				<div
+					class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/15 text-amber-400"
 				>
-					📋
-				</span>
-				Important Notes
-			</h2>
+					<Sparkles size={24} strokeWidth={1.5} />
+				</div>
+				<h2 class="font-display text-xl text-white/90 sm:text-2xl">Important Notes</h2>
+			</div>
+
 			<div class="grid gap-4 sm:grid-cols-2">
-				<div class="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-5">
-					<h3 class="flex items-center gap-2 font-semibold text-orange-300">
-						<span>🏢</span> Substitute Working Days
-					</h3>
-					<p class="mt-2 text-sm leading-relaxed text-white/60">
+				<!-- Substitute Working Days Note -->
+				<div class="card-elevated rounded-2xl border-orange-500/15 p-6">
+					<div class="flex items-center gap-3 text-orange-400">
+						<Building2 size={20} strokeWidth={1.5} />
+						<h3 class="font-medium">Substitute Working Days</h3>
+					</div>
+					<p class="mt-3 text-sm leading-relaxed text-white/50">
 						When public holidays fall on weekends, the government may designate <strong
-							class="text-orange-300">substitute working days</strong
+							class="text-orange-300/80">substitute working days</strong
 						> (usually Saturdays) when offices must remain open.
 					</p>
 				</div>
-				<div class="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-5">
-					<h3 class="flex items-center gap-2 font-semibold text-rose-300">
-						<span>💧</span> Thingyan Festival
-					</h3>
-					<p class="mt-2 text-sm leading-relaxed text-white/60">
-						The 2026 Thingyan holiday spans <strong class="text-white">9 consecutive days</strong> (April
-						11–19). All government offices and banks will be closed during this period.
+
+				<!-- Thingyan Note -->
+				<div class="card-elevated rounded-2xl border-rose-500/15 p-6">
+					<div class="flex items-center gap-3 text-rose-400">
+						<Droplets size={20} strokeWidth={1.5} />
+						<h3 class="font-medium">Thingyan Festival</h3>
+					</div>
+					<p class="mt-3 text-sm leading-relaxed text-white/50">
+						The 2026 Thingyan holiday spans <strong class="text-white/70">9 consecutive days</strong
+						> (April 11-19). All government offices and banks will be closed during this period.
 					</p>
 				</div>
-				<div class="rounded-2xl border border-violet-500/20 bg-violet-500/5 p-5">
-					<h3 class="flex items-center gap-2 font-semibold text-violet-300">
-						<span>🌙</span> Lunar-Dependent Dates
-					</h3>
-					<p class="mt-2 text-sm leading-relaxed text-white/60">
-						Dates for <strong class="text-white">Eid al-Adha</strong> and
-						<strong class="text-white">Deepavali</strong> are projections. The Ministry of Labour confirms
-						exact dates 1–2 weeks in advance.
+
+				<!-- Lunar Dependent Note -->
+				<div class="card-elevated rounded-2xl border-violet-500/15 p-6">
+					<div class="flex items-center gap-3 text-violet-400">
+						<Moon size={20} strokeWidth={1.5} />
+						<h3 class="font-medium">Lunar-Dependent Dates</h3>
+					</div>
+					<p class="mt-3 text-sm leading-relaxed text-white/50">
+						Dates for <strong class="text-white/70">Eid al-Adha</strong> and
+						<strong class="text-white/70">Deepavali</strong> are projections. The Ministry of Labour confirms
+						exact dates 1-2 weeks in advance.
 					</p>
 				</div>
-				<div class="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
-					<h3 class="flex items-center gap-2 font-semibold text-amber-300">
-						<span>📅</span> Double Holidays
-					</h3>
-					<p class="mt-2 text-sm leading-relaxed text-white/60">
-						On <strong class="text-white">March 2</strong>, Peasants' Day coincides with the Full
+
+				<!-- Double Holidays Note -->
+				<div class="card-elevated rounded-2xl border-amber-500/15 p-6">
+					<div class="flex items-center gap-3 text-amber-400">
+						<CalendarCheck size={20} strokeWidth={1.5} />
+						<h3 class="font-medium">Double Holidays</h3>
+					</div>
+					<p class="mt-3 text-sm leading-relaxed text-white/50">
+						On <strong class="text-white/70">March 2</strong>, Peasants' Day coincides with the Full
 						Moon of Tabaung. The total of 32 holiday days remains consistent.
 					</p>
 				</div>
-				<div class="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-5">
-					<h3 class="flex items-center gap-2 font-semibold text-emerald-300">
-						<span>🎄</span> Kayin New Year
-					</h3>
-					<p class="mt-2 text-sm leading-relaxed text-white/60">
-						There is <strong class="text-white">no Kayin New Year</strong> in 2026. The previous one fell
-						on December 19, 2025, and the next occurs in early 2027.
+
+				<!-- Kayin New Year Note -->
+				<div class="card-elevated rounded-2xl border-emerald-500/15 p-6 sm:col-span-2">
+					<div class="flex items-center gap-3 text-emerald-400">
+						<TreePine size={20} strokeWidth={1.5} />
+						<h3 class="font-medium">Kayin New Year</h3>
+					</div>
+					<p class="mt-3 text-sm leading-relaxed text-white/50">
+						There is <strong class="text-white/70">no Kayin New Year</strong> in 2026. The previous one
+						fell on December 19, 2025, and the next occurs in early 2027.
 					</p>
 				</div>
 			</div>
 		</section>
 
 		<!-- Footer -->
-		<footer class="mt-16 border-t border-white/5 pt-8 text-center">
+		<footer class="mt-20 border-t border-white/[0.06] pt-10 text-center">
 			<p class="text-sm text-white/30">
 				Data verified against official government announcements and DICA gazettes.
 			</p>
-			<p class="mt-2 text-xs text-white/20">
-				Made with ❤️ for Myanmar | {new Date().getFullYear()}
+			<p class="mt-3 flex items-center justify-center gap-2 text-xs text-white/20">
+				<span>Made with</span>
+				<Heart size={12} strokeWidth={2} class="text-rose-500/60" />
+				<span>for Myanmar</span>
+				<span class="mx-2">|</span>
+				<span>{new Date().getFullYear()}</span>
 			</p>
 		</footer>
 	</main>
 </div>
-
-<style>
-	:global(body) {
-		font-family: 'Outfit', system-ui, sans-serif;
-		background: #0a0a0f;
-	}
-
-	.font-outfit {
-		font-family: 'Outfit', system-ui, sans-serif;
-	}
-
-	.font-myanmar {
-		font-family: 'Noto Sans Myanmar', sans-serif;
-	}
-
-	@keyframes fadeInUp {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	@keyframes fadeInLeft {
-		from {
-			opacity: 0;
-			transform: translateX(-20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateX(0);
-		}
-	}
-
-	@keyframes pulse-slow {
-		0%,
-		100% {
-			opacity: 0.3;
-		}
-		50% {
-			opacity: 0.5;
-		}
-	}
-
-	@keyframes float {
-		0%,
-		100% {
-			transform: translateY(0) rotate(0deg);
-		}
-		50% {
-			transform: translateY(-20px) rotate(5deg);
-		}
-	}
-
-	.animate-pulse-slow {
-		animation: pulse-slow 8s ease-in-out infinite;
-	}
-
-	.animate-float {
-		animation: float 15s ease-in-out infinite;
-	}
-</style>

@@ -8,7 +8,7 @@ export interface Holiday {
 	category: 'national' | 'religious' | 'cultural' | 'international';
 	description?: string;
 	isLunarDependent?: boolean;
-	icon: string;
+	iconName: string;
 }
 
 export interface SubstituteWorkDay {
@@ -43,7 +43,7 @@ export const holidays: Holiday[] = [
 		day: 'Thu - Fri',
 		category: 'international',
 		description: 'Celebration of the Gregorian New Year',
-		icon: '🎊'
+		iconName: 'party-popper'
 	},
 	{
 		id: 'independence-day',
@@ -53,7 +53,7 @@ export const holidays: Holiday[] = [
 		day: 'Sun',
 		category: 'national',
 		description: 'Commemorates independence from British rule in 1948',
-		icon: '🇲🇲'
+		iconName: 'flag'
 	},
 	{
 		id: 'union-day',
@@ -64,7 +64,7 @@ export const holidays: Holiday[] = [
 		day: 'Thu - Fri',
 		category: 'national',
 		description: 'Celebrates the Panglong Agreement signed in 1947',
-		icon: '🤝'
+		iconName: 'users'
 	},
 	{
 		id: 'chinese-new-year',
@@ -75,7 +75,7 @@ export const holidays: Holiday[] = [
 		day: 'Mon - Tue',
 		category: 'cultural',
 		description: 'Lunar New Year celebration, Year of the Horse',
-		icon: '🐴'
+		iconName: 'sparkles'
 	},
 	{
 		id: 'peasants-day',
@@ -85,7 +85,7 @@ export const holidays: Holiday[] = [
 		day: 'Mon',
 		category: 'national',
 		description: 'Honours agricultural workers; coincides with Full Moon of Tabaung',
-		icon: '🌾'
+		iconName: 'wheat'
 	},
 	{
 		id: 'armed-forces-day',
@@ -95,7 +95,7 @@ export const holidays: Holiday[] = [
 		day: 'Fri',
 		category: 'national',
 		description: 'Commemorates the resistance against Japanese occupation in 1945',
-		icon: '⭐'
+		iconName: 'shield'
 	},
 	{
 		id: 'thingyan',
@@ -106,7 +106,7 @@ export const holidays: Holiday[] = [
 		day: 'Sat - Sun',
 		category: 'cultural',
 		description: 'Traditional New Year water festival - 9 consecutive days of celebration',
-		icon: '💧'
+		iconName: 'droplets'
 	},
 	{
 		id: 'full-moon-kasone',
@@ -116,7 +116,7 @@ export const holidays: Holiday[] = [
 		day: 'Thu',
 		category: 'religious',
 		description: "Buddha Day - commemorates Buddha's birth, enlightenment, and passing",
-		icon: '🪷'
+		iconName: 'flower-2'
 	},
 	{
 		id: 'labour-day',
@@ -126,7 +126,7 @@ export const holidays: Holiday[] = [
 		day: 'Fri',
 		category: 'international',
 		description: "International Workers' Day",
-		icon: '👷'
+		iconName: 'hard-hat'
 	},
 	{
 		id: 'eid-al-adha',
@@ -137,7 +137,7 @@ export const holidays: Holiday[] = [
 		category: 'religious',
 		description: 'Festival of Sacrifice - date subject to moon sighting',
 		isLunarDependent: true,
-		icon: '🕌'
+		iconName: 'moon-star'
 	},
 	{
 		id: 'martyrs-day',
@@ -147,7 +147,7 @@ export const holidays: Holiday[] = [
 		day: 'Sun',
 		category: 'national',
 		description: 'Honours Aung San and other leaders assassinated in 1947',
-		icon: '🕯️'
+		iconName: 'flame'
 	},
 	{
 		id: 'full-moon-waso',
@@ -157,7 +157,7 @@ export const holidays: Holiday[] = [
 		day: 'Wed',
 		category: 'religious',
 		description: 'Start of Buddhist Lent (Vassa) - monks begin rain retreat',
-		icon: '☸️'
+		iconName: 'circle'
 	},
 	{
 		id: 'thadingyut',
@@ -168,7 +168,7 @@ export const holidays: Holiday[] = [
 		day: 'Sun - Tue',
 		category: 'religious',
 		description: 'Festival of Lights - end of Buddhist Lent',
-		icon: '🪔'
+		iconName: 'lamp'
 	},
 	{
 		id: 'deepavali',
@@ -179,7 +179,7 @@ export const holidays: Holiday[] = [
 		category: 'religious',
 		description: 'Hindu Festival of Lights - date subject to moon sighting',
 		isLunarDependent: true,
-		icon: '✨'
+		iconName: 'star'
 	},
 	{
 		id: 'tazaungdaing',
@@ -190,7 +190,7 @@ export const holidays: Holiday[] = [
 		day: 'Mon - Tue',
 		category: 'religious',
 		description: 'Festival of Lights with robe-weaving ceremony',
-		icon: '🎆'
+		iconName: 'sparkle'
 	},
 	{
 		id: 'national-day',
@@ -200,7 +200,7 @@ export const holidays: Holiday[] = [
 		day: 'Fri',
 		category: 'national',
 		description: 'Commemorates the 1920 student boycott against British rule',
-		icon: '🎗️'
+		iconName: 'award'
 	},
 	{
 		id: 'eid-al-fitr',
@@ -212,7 +212,7 @@ export const holidays: Holiday[] = [
 		category: 'religious',
 		description: 'Festival of Breaking the Fast - date subject to moon sighting',
 		isLunarDependent: true,
-		icon: '🌙'
+		iconName: 'moon'
 	},
 	// Note: Karen's (Kayin) New Year does not occur in 2026. The previous one was December 19, 2025. The next one will be in early 2027.
 	{
@@ -223,21 +223,37 @@ export const holidays: Holiday[] = [
 		day: 'Fri',
 		category: 'international',
 		description: 'Christian celebration of the birth of Jesus Christ',
-		icon: '🎄'
+		iconName: 'gift'
 	}
 ];
 
 export const categoryColors: Record<
 	Holiday['category'],
-	{ bg: string; text: string; border: string }
+	{ bg: string; text: string; border: string; gradient: string }
 > = {
-	national: { bg: 'bg-amber-500/20', text: 'text-amber-300', border: 'border-amber-500/40' },
-	religious: { bg: 'bg-violet-500/20', text: 'text-violet-300', border: 'border-violet-500/40' },
-	cultural: { bg: 'bg-rose-500/20', text: 'text-rose-300', border: 'border-rose-500/40' },
+	national: {
+		bg: 'bg-amber-500/10',
+		text: 'text-amber-400',
+		border: 'border-amber-500/25',
+		gradient: 'from-amber-500/20 to-amber-600/5'
+	},
+	religious: {
+		bg: 'bg-violet-500/10',
+		text: 'text-violet-400',
+		border: 'border-violet-500/25',
+		gradient: 'from-violet-500/20 to-violet-600/5'
+	},
+	cultural: {
+		bg: 'bg-rose-500/10',
+		text: 'text-rose-400',
+		border: 'border-rose-500/25',
+		gradient: 'from-rose-500/20 to-rose-600/5'
+	},
 	international: {
-		bg: 'bg-emerald-500/20',
-		text: 'text-emerald-300',
-		border: 'border-emerald-500/40'
+		bg: 'bg-emerald-500/10',
+		text: 'text-emerald-400',
+		border: 'border-emerald-500/25',
+		gradient: 'from-emerald-500/20 to-emerald-600/5'
 	}
 };
 

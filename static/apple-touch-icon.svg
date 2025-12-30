@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180">
+  <!-- Background -->
+  <rect width="180" height="180" fill="#4F46E5"/>
+  
+  <!-- Calendar Icon -->
+  <rect x="30" y="45" width="120" height="108" rx="12" fill="#fff"/>
+  
+  <!-- Calendar Header -->
+  <rect x="30" y="45" width="120" height="24" rx="12" fill="#FBBF24"/>
+  <rect x="30" y="63" width="120" height="9" fill="#FBBF24"/>
+  
+  <!-- Calendar Rings -->
+  <circle cx="55" cy="54" r="6" fill="#4F46E5"/>
+  <circle cx="90" cy="54" r="6" fill="#4F46E5"/>
+  <circle cx="125" cy="54" r="6" fill="#4F46E5"/>
+  
+  <!-- Calendar Grid Dots -->
+  <circle cx="50" cy="90" r="5" fill="#6366F1"/>
+  <circle cx="73" cy="90" r="5" fill="#6366F1"/>
+  <circle cx="96" cy="90" r="5" fill="#6366F1"/>
+  <circle cx="119" cy="90" r="5" fill="#6366F1"/>
+  
+  <circle cx="50" cy="114" r="5" fill="#6366F1"/>
+  <circle cx="73" cy="114" r="5" fill="#6366F1"/>
+  <circle cx="96" cy="114" r="5" fill="#6366F1"/>
+  <circle cx="119" cy="114" r="5" fill="#6366F1"/>
+  
+  <!-- Special Holiday Star -->
+  <path d="M 90 129 L 94 141 L 107 143 L 98.5 151 L 100.5 164 L 90 158 L 79.5 164 L 81.5 151 L 73 143 L 86 141 Z" fill="#EF4444"/>
+</svg>

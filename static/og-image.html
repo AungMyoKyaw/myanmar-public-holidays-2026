@@ -8,7 +8,7 @@
       width: 1200px;
       height: 630px;
       background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
-      font-family: 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -22,101 +22,125 @@
       width: 600px;
       height: 600px;
       border-radius: 50%;
-      filter: blur(100px);
-      opacity: 0.3;
+      filter: blur(120px);
+      opacity: 0.25;
     }
-    .glow-1 { background: #f59e0b; top: -200px; left: -200px; }
-    .glow-2 { background: #ec4899; bottom: -200px; right: -200px; }
+    .glow-1 { background: #f59e0b; top: -250px; left: -250px; }
+    .glow-2 { background: #ec4899; bottom: -250px; right: -250px; }
+    .glow-3 { background: #8b5cf6; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.15; }
     .content {
       position: relative;
       z-index: 1;
       text-align: center;
       padding: 60px;
     }
-    .flag { font-size: 80px; margin-bottom: 20px; }
+    .flag { 
+      font-size: 100px; 
+      margin-bottom: 30px; 
+      filter: drop-shadow(0 10px 30px rgba(0,0,0,0.5));
+    }
+    .title-group {
+      margin-bottom: 30px;
+    }
     h1 {
-      font-size: 72px;
-      font-weight: 800;
-      background: linear-gradient(135deg, #fff 0%, #fbbf24 50%, #fff 100%);
+      font-size: 78px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fff 0%, #fbbf24 40%, #f59e0b 60%, #fff 100%);
+      background-size: 200% auto;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 10px;
+      background-clip: text;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      text-shadow: 0 4px 20px rgba(251, 191, 36, 0.3);
     }
     .year {
       display: inline-block;
       background: linear-gradient(135deg, #f59e0b, #ec4899);
-      padding: 8px 32px;
-      border-radius: 16px;
-      font-size: 48px;
-      font-weight: 700;
-      margin-left: 20px;
+      padding: 12px 40px;
+      border-radius: 20px;
+      font-size: 56px;
+      font-weight: 800;
+      margin-left: 24px;
       vertical-align: middle;
+      box-shadow: 0 8px 32px rgba(245, 158, 11, 0.4);
     }
     .subtitle {
-      font-size: 28px;
-      color: rgba(255,255,255,0.6);
-      margin-top: 20px;
-      font-family: 'Noto Sans Myanmar', sans-serif;
+      font-size: 32px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 24px;
+      font-weight: 500;
     }
     .stats {
       display: flex;
-      gap: 60px;
-      margin-top: 40px;
+      gap: 80px;
+      margin-top: 50px;
       justify-content: center;
     }
     .stat {
       text-align: center;
+      background: rgba(255,255,255,0.05);
+      padding: 28px 48px;
+      border-radius: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px);
     }
     .stat-num {
-      font-size: 64px;
-      font-weight: 800;
-      color: #fbbf24;
+      font-size: 72px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #fbbf24, #f59e0b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
     }
     .stat-label {
-      font-size: 20px;
-      color: rgba(255,255,255,0.5);
+      font-size: 22px;
+      color: rgba(255,255,255,0.6);
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 3px;
+      margin-top: 12px;
+      font-weight: 600;
     }
-    .features {
-      display: flex;
-      gap: 30px;
-      margin-top: 40px;
-    }
-    .feature {
-      background: rgba(255,255,255,0.1);
-      padding: 12px 24px;
+    .badge {
+      position: absolute;
+      top: 40px;
+      right: 40px;
+      background: rgba(251, 191, 36, 0.15);
+      border: 2px solid rgba(251, 191, 36, 0.3);
+      padding: 14px 28px;
       border-radius: 100px;
       font-size: 18px;
-      color: rgba(255,255,255,0.8);
+      font-weight: 700;
+      color: #fbbf24;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
   </style>
 </head>
 <body>
   <div class="bg-glow glow-1"></div>
   <div class="bg-glow glow-2"></div>
+  <div class="bg-glow glow-3"></div>
+  <div class="badge">📅 OFFICIAL 2026</div>
   <div class="content">
     <div class="flag">🇲🇲</div>
-    <h1>Myanmar Holidays <span class="year">2026</span></h1>
-    <p class="subtitle">မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ</p>
+    <div class="title-group">
+      <h1>Myanmar Holidays <span class="year">2026</span></h1>
+      <p class="subtitle">မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ</p>
+    </div>
     <div class="stats">
       <div class="stat">
-        <div class="stat-num">17</div>
+        <div class="stat-num">18</div>
         <div class="stat-label">Holidays</div>
       </div>
       <div class="stat">
-        <div class="stat-num">32</div>
+        <div class="stat-num">33</div>
         <div class="stat-label">Days Off</div>
       </div>
       <div class="stat">
         <div class="stat-num">9</div>
-        <div class="stat-label">Thingyan Days</div>
+        <div class="stat-label">Thingyan</div>
       </div>
-    </div>
-    <div class="features">
-      <span class="feature">📅 Calendar View</span>
-      <span class="feature">🔍 Search & Filter</span>
-      <span class="feature">🇲🇲 Bilingual</span>
     </div>
   </div>
 </body>
