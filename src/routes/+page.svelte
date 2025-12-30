@@ -1,5 +1,6 @@
 <script lang="ts">
 	import HolidayCard from '$lib/components/HolidayCard.svelte';
+	import CalendarView from '$lib/components/CalendarView.svelte';
 	import {
 		holidays,
 		groupHolidaysByMonth,
@@ -11,7 +12,7 @@
 
 	let searchQuery = $state('');
 	let selectedCategory = $state<Holiday['category'] | 'all'>('all');
-	let viewMode = $state<'grid' | 'timeline'>('grid');
+	let viewMode = $state<'grid' | 'timeline' | 'calendar'>('calendar');
 
 	const categories: (Holiday['category'] | 'all')[] = ['all', 'national', 'religious', 'cultural', 'international'];
 
@@ -168,10 +169,27 @@
 			<!-- View toggle -->
 			<div class="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
 				<button
+					onclick={() => (viewMode = 'calendar')}
+					class="rounded-lg p-2 transition-all {viewMode === 'calendar'
+						? 'bg-white/10 text-white'
+						: 'text-white/40 hover:text-white'}"
+					title="Calendar View"
+				>
+					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							stroke-width="2"
+							d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+						/>
+					</svg>
+				</button>
+				<button
 					onclick={() => (viewMode = 'grid')}
 					class="rounded-lg p-2 transition-all {viewMode === 'grid'
 						? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white'}"
+					title="Grid View"
 				>
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path
@@ -187,6 +205,7 @@
 					class="rounded-lg p-2 transition-all {viewMode === 'timeline'
 						? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white'}"
+					title="Timeline View"
 				>
 					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path
@@ -201,14 +220,17 @@
 		</div>
 
 		<!-- Results count -->
-		{#if filteredHolidays.length !== holidays.length}
+		{#if filteredHolidays.length !== holidays.length && viewMode !== 'calendar'}
 			<div class="mb-6 text-sm text-white/40">
 				Showing {filteredHolidays.length} of {holidays.length} holidays
 			</div>
 		{/if}
 
-		<!-- Grid View -->
-		{#if viewMode === 'grid'}
+		<!-- Calendar View -->
+		{#if viewMode === 'calendar'}
+			<CalendarView holidays={filteredHolidays} year={2026} />
+		{:else if viewMode === 'grid'}
+			<!-- Grid View -->
 			<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
 				{#each filteredHolidays as holiday, i}
 					<div style="animation: fadeInUp 0.5s ease-out {i * 0.05}s both;">
