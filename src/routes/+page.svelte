@@ -7,6 +7,8 @@
 		getTotalHolidayDays,
 		categoryLabels,
 		categoryColors,
+		substituteWorkDays,
+		formatDate,
 		type Holiday
 	} from '$lib/data/holidays';
 
@@ -133,41 +135,41 @@
 
 	<!-- Header -->
 	<header class="relative z-10 border-b border-white/5">
-		<div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-			<div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+		<div class="mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-8 lg:px-8">
+			<div class="flex flex-col gap-4 sm:gap-6 lg:flex-row lg:items-end lg:justify-between">
 				<div>
-					<div class="flex items-center gap-3 mb-3">
-						<span class="text-4xl">🇲🇲</span>
-						<div class="h-8 w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent"></div>
-						<span class="text-xs font-medium uppercase tracking-[0.3em] text-amber-500/80">Official Calendar</span>
+					<div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+						<span class="text-3xl sm:text-4xl">🇲🇲</span>
+						<div class="h-6 sm:h-8 w-px bg-gradient-to-b from-transparent via-amber-500/50 to-transparent"></div>
+						<span class="text-[10px] sm:text-xs font-medium uppercase tracking-[0.2em] sm:tracking-[0.3em] text-amber-500/80">Official Calendar</span>
 					</div>
-					<h1 class="font-outfit text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
+					<h1 class="font-outfit text-2xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight">
 						<span class="bg-gradient-to-r from-white via-amber-100 to-white bg-clip-text text-transparent">
 							Myanmar Holidays
 						</span>
-						<span class="ml-3 inline-flex items-center rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 px-4 py-1 text-2xl font-bold text-white shadow-lg shadow-amber-500/25">
+						<span class="ml-2 sm:ml-3 inline-flex items-center rounded-lg sm:rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 px-2 sm:px-4 py-0.5 sm:py-1 text-lg sm:text-2xl font-bold text-white shadow-lg shadow-amber-500/25">
 							2026
 						</span>
 					</h1>
-					<p class="mt-3 font-myanmar text-lg text-white/50">
+					<p class="mt-2 sm:mt-3 font-myanmar text-sm sm:text-lg text-white/50">
 						မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ ၂၀၂၆
 					</p>
 				</div>
 
 				<!-- Stats cards -->
-				<div class="flex flex-wrap gap-3">
-					<div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-sm transition-all hover:border-amber-500/30 hover:bg-white/10">
+				<div class="flex flex-wrap gap-2 sm:gap-3">
+					<div class="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 px-3 sm:px-5 py-2 sm:py-4 backdrop-blur-sm transition-all hover:border-amber-500/30 hover:bg-white/10">
 						<div class="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
 						<div class="relative">
-							<div class="text-3xl font-bold text-white">{stats.total}</div>
-							<div class="text-xs font-medium uppercase tracking-wider text-white/40">Holidays</div>
+							<div class="text-2xl sm:text-3xl font-bold text-white">{stats.total}</div>
+							<div class="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-white/40">Holidays</div>
 						</div>
 					</div>
-					<div class="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 px-5 py-4 backdrop-blur-sm transition-all hover:border-rose-500/30 hover:bg-white/10">
+					<div class="group relative overflow-hidden rounded-xl sm:rounded-2xl border border-white/10 bg-white/5 px-3 sm:px-5 py-2 sm:py-4 backdrop-blur-sm transition-all hover:border-rose-500/30 hover:bg-white/10">
 						<div class="absolute inset-0 bg-gradient-to-br from-rose-500/10 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
 						<div class="relative">
-							<div class="text-3xl font-bold text-white">{stats.totalDays}</div>
-							<div class="text-xs font-medium uppercase tracking-wider text-white/40">Days Off</div>
+							<div class="text-2xl sm:text-3xl font-bold text-white">{stats.totalDays}</div>
+							<div class="text-[10px] sm:text-xs font-medium uppercase tracking-wider text-white/40">Days Off</div>
 						</div>
 					</div>
 				</div>
@@ -175,13 +177,13 @@
 		</div>
 	</header>
 
-	<main class="relative z-10 mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+	<main class="relative z-10 mx-auto max-w-7xl px-3 py-6 sm:px-6 sm:py-10 lg:px-8">
 		<!-- Filters -->
-		<div class="mb-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+		<div class="mb-6 sm:mb-10 flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
 			<!-- Search -->
-			<div class="relative max-w-md flex-1">
+			<div class="relative w-full lg:max-w-md lg:flex-1">
 				<svg
-					class="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-white/30"
+					class="absolute left-3 sm:left-4 top-1/2 h-4 w-4 sm:h-5 sm:w-5 -translate-y-1/2 text-white/30"
 					fill="none"
 					viewBox="0 0 24 24"
 					stroke="currentColor"
@@ -197,41 +199,43 @@
 					type="text"
 					bind:value={searchQuery}
 					placeholder="Search holidays..."
-					class="w-full rounded-xl border border-white/10 bg-white/5 py-3 pl-12 pr-4 text-white placeholder-white/30 backdrop-blur-sm transition-all focus:border-amber-500/50 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
+					class="w-full rounded-lg sm:rounded-xl border border-white/10 bg-white/5 py-2.5 sm:py-3 pl-10 sm:pl-12 pr-4 text-sm sm:text-base text-white placeholder-white/30 backdrop-blur-sm transition-all focus:border-amber-500/50 focus:bg-white/10 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
 				/>
 			</div>
 
-			<!-- Category filters -->
-			<div class="flex flex-wrap items-center gap-2">
-				{#each categories as category}
-					{@const isActive = selectedCategory === category}
-					{@const colors = category === 'all' ? null : categoryColors[category]}
-					<button
-						onclick={() => (selectedCategory = category)}
-						class="rounded-full border px-4 py-2 text-sm font-medium transition-all {isActive
-							? 'border-amber-500/50 bg-amber-500/20 text-amber-300'
-							: 'border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:bg-white/10 hover:text-white'}"
-					>
-						{category === 'all' ? 'All' : categoryLabels[category]}
-						{#if category !== 'all'}
-							<span class="ml-1.5 text-xs opacity-60">
-								({stats[category]})
+			<!-- Category filters & View toggle wrapper -->
+			<div class="flex flex-col sm:flex-row gap-3 sm:gap-4 sm:items-center">
+				<!-- Category filters -->
+				<div class="flex flex-wrap items-center gap-1.5 sm:gap-2">
+					{#each categories as category}
+						{@const isActive = selectedCategory === category}
+						{@const colors = category === 'all' ? null : categoryColors[category]}
+						<button
+							onclick={() => (selectedCategory = category)}
+							class="rounded-full border px-2.5 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm font-medium transition-all {isActive
+								? 'border-amber-500/50 bg-amber-500/20 text-amber-300'
+								: 'border-white/10 bg-white/5 text-white/60 hover:border-white/20 hover:bg-white/10 hover:text-white'}"
+						>
+							{category === 'all' ? 'All' : categoryLabels[category]}
+							<span class="hidden sm:inline">
+								{#if category !== 'all'}
+									<span class="ml-1 text-xs opacity-60">({stats[category]})</span>
+								{/if}
 							</span>
-						{/if}
-					</button>
-				{/each}
-			</div>
+						</button>
+					{/each}
+				</div>
 
-			<!-- View toggle -->
-			<div class="flex items-center gap-1 rounded-xl border border-white/10 bg-white/5 p-1">
-				<button
-					onclick={() => (viewMode = 'calendar')}
-					class="rounded-lg p-2 transition-all {viewMode === 'calendar'
-						? 'bg-white/10 text-white'
+				<!-- View toggle -->
+				<div class="flex items-center gap-1 rounded-lg sm:rounded-xl border border-white/10 bg-white/5 p-1 self-start sm:self-auto">
+					<button
+						onclick={() => (viewMode = 'calendar')}
+						class="rounded-md sm:rounded-lg p-1.5 sm:p-2 transition-all {viewMode === 'calendar'
+							? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white'}"
 					title="Calendar View"
 				>
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -242,12 +246,12 @@
 				</button>
 				<button
 					onclick={() => (viewMode = 'grid')}
-					class="rounded-lg p-2 transition-all {viewMode === 'grid'
+					class="rounded-md sm:rounded-lg p-1.5 sm:p-2 transition-all {viewMode === 'grid'
 						? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white'}"
 					title="Grid View"
 				>
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -258,12 +262,12 @@
 				</button>
 				<button
 					onclick={() => (viewMode = 'timeline')}
-					class="rounded-lg p-2 transition-all {viewMode === 'timeline'
+					class="rounded-md sm:rounded-lg p-1.5 sm:p-2 transition-all {viewMode === 'timeline'
 						? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white'}"
 					title="Timeline View"
 				>
-					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+					<svg class="h-4 w-4 sm:h-5 sm:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path
 							stroke-linecap="round"
 							stroke-linejoin="round"
@@ -272,12 +276,13 @@
 						/>
 					</svg>
 				</button>
+				</div>
 			</div>
 		</div>
 
 		<!-- Results count -->
 		{#if filteredHolidays.length !== holidays.length && viewMode !== 'calendar'}
-			<div class="mb-6 text-sm text-white/40">
+			<div class="mb-4 sm:mb-6 text-xs sm:text-sm text-white/40">
 				Showing {filteredHolidays.length} of {holidays.length} holidays
 			</div>
 		{/if}
@@ -338,6 +343,41 @@
 			</div>
 		{/if}
 
+		<!-- Substitute Working Days Section -->
+		{#if substituteWorkDays.length > 0}
+			<section class="mt-16">
+				<h2 class="mb-6 flex items-center gap-3 text-xl font-bold">
+					<span class="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-500/20 text-orange-400">
+						🏢
+					</span>
+					Substitute Working Days
+					<span class="ml-2 rounded-full bg-orange-500/20 px-3 py-1 text-sm font-normal text-orange-300">
+						{substituteWorkDays.length} days
+					</span>
+				</h2>
+				<p class="mb-4 text-sm text-white/50">
+					These are days when you <strong class="text-orange-300">must attend office</strong> even though they fall on weekends. They substitute for public holidays.
+				</p>
+				<div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+					{#each substituteWorkDays as subDay}
+						<div class="rounded-2xl border border-orange-500/30 bg-orange-500/10 p-4 transition-all hover:border-orange-500/50 hover:bg-orange-500/15">
+							<div class="flex items-center gap-3">
+								<div class="flex h-12 w-12 flex-col items-center justify-center rounded-xl bg-orange-500/20">
+									<span class="text-lg font-bold text-orange-300">{formatDate(subDay.date).split(' ')[1]}</span>
+									<span class="text-[10px] text-orange-400/70">{formatDate(subDay.date).split(' ')[0]}</span>
+								</div>
+								<div class="flex-1">
+									<h3 class="font-semibold text-orange-200">{subDay.day} - Work Day</h3>
+									<p class="text-xs text-orange-300/60">{subDay.reason}</p>
+								</div>
+							</div>
+							<p class="mt-2 font-myanmar text-xs text-orange-300/50">{subDay.reasonMyanmar}</p>
+						</div>
+					{/each}
+				</div>
+			</section>
+		{/if}
+
 		<!-- Important Notes -->
 		<section class="mt-16">
 			<h2 class="mb-6 flex items-center gap-3 text-xl font-bold">
@@ -347,6 +387,14 @@
 				Important Notes
 			</h2>
 			<div class="grid gap-4 sm:grid-cols-2">
+				<div class="rounded-2xl border border-orange-500/20 bg-orange-500/5 p-5">
+					<h3 class="flex items-center gap-2 font-semibold text-orange-300">
+						<span>🏢</span> Substitute Working Days
+					</h3>
+					<p class="mt-2 text-sm leading-relaxed text-white/60">
+						When public holidays fall on weekends, the government may designate <strong class="text-orange-300">substitute working days</strong> (usually Saturdays) when offices must remain open.
+					</p>
+				</div>
 				<div class="rounded-2xl border border-rose-500/20 bg-rose-500/5 p-5">
 					<h3 class="flex items-center gap-2 font-semibold text-rose-300">
 						<span>💧</span> Thingyan Festival

@@ -11,6 +11,28 @@ export interface Holiday {
 	icon: string;
 }
 
+export interface SubstituteWorkDay {
+	id: string;
+	date: string;
+	day: string;
+	reason: string;
+	reasonMyanmar: string;
+	forHoliday: string;
+}
+
+// Substitute working days - days you must work even though they're weekends
+// Based on government announcements for 2026
+export const substituteWorkDays: SubstituteWorkDay[] = [
+	{
+		id: 'sub-jan-10',
+		date: '2026-01-10',
+		day: 'Sat',
+		reason: 'Substitute for Independence Day (Jan 4, Sunday)',
+		reasonMyanmar: 'လွတ်လပ်ရေးနေ့ (တနင်္ဂနွေနေ့) အစားထိုးအလုပ်လုပ်ရက်',
+		forHoliday: 'independence-day'
+	}
+];
+
 export const holidays: Holiday[] = [
 	{
 		id: 'new-year-2026',

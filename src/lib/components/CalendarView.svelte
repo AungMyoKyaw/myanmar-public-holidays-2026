@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Holiday } from '$lib/data/holidays';
-	import { categoryColors, formatDate, getHolidayDays } from '$lib/data/holidays';
+	import type { Holiday, SubstituteWorkDay } from '$lib/data/holidays';
+	import { categoryColors, formatDate, getHolidayDays, substituteWorkDays } from '$lib/data/holidays';
 
 	let { holidays, year = 2026 }: { holidays: Holiday[]; year?: number } = $props();
 
@@ -39,6 +39,11 @@
 		});
 	}
 
+	function getSubstituteWorkDay(month: number, day: number): SubstituteWorkDay | undefined {
+		const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+		return substituteWorkDays.find((s) => s.date === dateStr);
+	}
+
 	function isToday(month: number, day: number): boolean {
 		const today = new Date();
 		return (
@@ -51,15 +56,29 @@
 	}
 
 	let selectedHoliday = $state<Holiday | null>(null);
+	let selectedSubstituteDay = $state<SubstituteWorkDay | null>(null);
 	let tooltipPosition = $state({ x: 0, y: 0 });
 
 	function showTooltip(holiday: Holiday, event: MouseEvent) {
 		selectedHoliday = holiday;
+		selectedSubstituteDay = null;
+		tooltipPosition = { x: event.clientX, y: event.clientY };
+	}
+
+	function showSubstituteTooltip(subDay: SubstituteWorkDay, event: MouseEvent) {
+		selectedSubstituteDay = subDay;
+		selectedHoliday = null;
 		tooltipPosition = { x: event.clientX, y: event.clientY };
 	}
 
 	function hideTooltip() {
 		selectedHoliday = null;
+		selectedSubstituteDay = null;
+	}
+
+	// Get substitute work days for a specific month
+	function getMonthSubstituteDays(monthIndex: number): SubstituteWorkDay[] {
+		return substituteWorkDays.filter((s) => new Date(s.date).getMonth() === monthIndex);
 	}
 </script>
 
@@ -70,6 +89,7 @@
 			{@const daysInMonth = getDaysInMonth(monthIndex, year)}
 			{@const firstDay = getFirstDayOfMonth(monthIndex, year)}
 			{@const monthHolidays = holidays.filter((h) => new Date(h.startDate).getMonth() === monthIndex)}
+			{@const monthSubstituteDays = getMonthSubstituteDays(monthIndex)}
 
 			<div
 				class="rounded-2xl border border-white/10 bg-white/5 p-3 sm:p-4 backdrop-blur-sm transition-all hover:border-white/20 hover:bg-white/[0.07]"
@@ -111,7 +131,9 @@
 						{@const day = dayIndex + 1}
 						{@const dayOfWeek = (firstDay + dayIndex) % 7}
 						{@const dayHolidays = getHolidaysForDate(monthIndex, day)}
+						{@const substituteDay = getSubstituteWorkDay(monthIndex, day)}
 						{@const hasHoliday = dayHolidays.length > 0}
+						{@const hasSubstitute = !!substituteDay}
 						{@const primaryHoliday = dayHolidays[0]}
 						{@const colors = primaryHoliday ? categoryColors[primaryHoliday.category] : null}
 
@@ -120,25 +142,42 @@
 								{isToday(monthIndex, day)
 								? 'ring-2 ring-amber-500 ring-offset-1 ring-offset-[#0a0a0f]'
 								: ''}
-								{hasHoliday
-								? `${colors?.bg} ${colors?.border} border hover:scale-110 hover:z-10`
-								: isWeekend(dayOfWeek)
-									? 'text-rose-400/60 hover:bg-white/5'
-									: 'text-white/60 hover:bg-white/5'}"
-							onmouseenter={(e) => hasHoliday && showTooltip(primaryHoliday, e)}
+								{hasSubstitute
+								? 'bg-orange-500/30 border border-orange-500/50 hover:scale-110 hover:z-10'
+								: hasHoliday
+									? `${colors?.bg} ${colors?.border} border hover:scale-110 hover:z-10`
+									: isWeekend(dayOfWeek)
+										? 'text-rose-400/60 hover:bg-white/5'
+										: 'text-white/60 hover:bg-white/5'}"
+							onmouseenter={(e) => {
+								if (hasSubstitute) showSubstituteTooltip(substituteDay, e);
+								else if (hasHoliday) showTooltip(primaryHoliday, e);
+							}}
 							onmouseleave={hideTooltip}
-							onclick={() => hasHoliday && (selectedHoliday = primaryHoliday)}
+							onclick={() => {
+								if (hasSubstitute) selectedSubstituteDay = substituteDay;
+								else if (hasHoliday) selectedHoliday = primaryHoliday;
+							}}
 						>
 							<span
-								class="flex h-full w-full items-center justify-center {hasHoliday
-									? colors?.text + ' font-semibold'
-									: ''}"
+								class="flex h-full w-full items-center justify-center {hasSubstitute
+									? 'text-orange-300 font-semibold'
+									: hasHoliday
+										? colors?.text + ' font-semibold'
+										: ''}"
 							>
 								{day}
 							</span>
 
+							<!-- Substitute work day indicator -->
+							{#if hasSubstitute}
+								<span
+									class="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-orange-400"
+								></span>
+							{/if}
+
 							<!-- Holiday indicator dot -->
-							{#if hasHoliday}
+							{#if hasHoliday && !hasSubstitute}
 								<span
 									class="absolute -bottom-0.5 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full {colors?.text.replace(
 										'text-',
@@ -160,7 +199,7 @@
 				</div>
 
 				<!-- Month's holiday list (compact) -->
-				{#if monthHolidays.length > 0}
+				{#if monthHolidays.length > 0 || monthSubstituteDays.length > 0}
 					<div class="mt-3 space-y-1 border-t border-white/10 pt-3">
 						{#each monthHolidays as holiday}
 							{@const colors = categoryColors[holiday.category]}
@@ -177,6 +216,18 @@
 								{/if}
 							</div>
 						{/each}
+						{#each monthSubstituteDays as subDay}
+							<div
+								class="flex items-center gap-2 rounded-lg px-2 py-1 text-xs transition-all hover:bg-orange-500/10 bg-orange-500/5"
+							>
+								<span class="text-base">🏢</span>
+								<span class="flex-1 truncate text-orange-300/80">Work Day</span>
+								<span class="text-orange-400/60">{formatDate(subDay.date).split(' ')[1]}</span>
+								<span class="rounded bg-orange-500/20 px-1.5 py-0.5 text-[10px] text-orange-300/70">
+									sub
+								</span>
+							</div>
+						{/each}
 					</div>
 				{/if}
 			</div>
@@ -184,7 +235,7 @@
 	</div>
 </div>
 
-<!-- Floating tooltip -->
+<!-- Floating tooltip for holidays -->
 {#if selectedHoliday}
 	{@const colors = categoryColors[selectedHoliday.category]}
 	<div
@@ -223,6 +274,34 @@
 						<span>🌙</span> Date subject to moon sighting
 					</p>
 				{/if}
+			</div>
+		</div>
+	</div>
+{/if}
+
+<!-- Floating tooltip for substitute working days -->
+{#if selectedSubstituteDay}
+	<div
+		class="pointer-events-none fixed z-50 max-w-xs rounded-xl border border-orange-500/40 bg-orange-500/20 p-4 shadow-2xl backdrop-blur-xl"
+		style="left: {Math.min(tooltipPosition.x + 10, window.innerWidth - 300)}px; top: {Math.min(
+			tooltipPosition.y + 10,
+			window.innerHeight - 200
+		)}px;"
+	>
+		<div class="flex items-start gap-3">
+			<span class="text-3xl">🏢</span>
+			<div>
+				<h4 class="font-semibold text-orange-200">Substitute Working Day</h4>
+				<p class="font-myanmar text-sm text-orange-300/70">{selectedSubstituteDay.reasonMyanmar}</p>
+				<p class="mt-1 text-xs text-orange-300/50">
+					{formatDate(selectedSubstituteDay.date)}
+					<span class="ml-2 text-orange-300/30">({selectedSubstituteDay.day})</span>
+				</p>
+				<p class="mt-2 text-xs leading-relaxed text-orange-200/60">{selectedSubstituteDay.reason}</p>
+				<div class="mt-2 flex items-center gap-1 text-xs text-orange-400/80">
+					<span>⚠️</span>
+					<span>Office attendance required</span>
+				</div>
 			</div>
 		</div>
 	</div>
