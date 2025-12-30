@@ -203,6 +203,19 @@ export const holidays: Holiday[] = [
 		icon: '🎗️'
 	},
 	{
+		id: 'eid-al-fitr',
+		name: 'Eid al-Fitr',
+		nameMyanmar: 'အိဒ်အလ်ဖစ်တာ',
+		startDate: '2026-03-06',
+		endDate: '2026-03-07',
+		day: 'Fri - Sat',
+		category: 'religious',
+		description: 'Festival of Breaking the Fast - date subject to moon sighting',
+		isLunarDependent: true,
+		icon: '🌙'
+	},
+	// Note: Karen's (Kayin) New Year does not occur in 2026. The previous one was December 19, 2025. The next one will be in early 2027.
+	{
 		id: 'christmas',
 		name: 'Christmas Day',
 		nameMyanmar: 'ခရစ္စမတ်နေ့',
