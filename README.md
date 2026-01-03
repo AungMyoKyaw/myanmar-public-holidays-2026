@@ -8,7 +8,7 @@ A beautifully designed web application displaying the complete list of official 
 
 ## Features
 
-- **18 Official Holidays** - Complete list with 33 total days off
+- **16 Confirmed Holidays** - 30 confirmed days off plus 2 additional holidays with TBD dates (18 total)
 - **9-Day Thingyan Festival** - Extended holiday period from April 11-19, 2026
 - **Three View Modes**
   - Calendar view with holiday indicators and tooltips
@@ -171,16 +171,19 @@ Holidays are categorized as follows:
 
 | Category      | Count | Examples                                      |
 | ------------- | ----- | --------------------------------------------- |
-| National      | 7     | Independence Day, Union Day, Armed Forces Day |
+| National      | 6     | Independence Day, Union Day, Armed Forces Day |
 | Religious     | 7     | Thingyan, Full Moon Days, Eid celebrations    |
 | Cultural      | 2     | Thingyan Water Festival, Chinese New Year     |
-| International | 2     | New Year's Day, Labour Day, Christmas         |
+| International | 3     | New Year's Day, Labour Day, Christmas         |
 
 ### Key Highlights
 
+- **Confirmed Holidays:** 16 holidays with 30 confirmed days off
+- **TBD Holidays:** 2 additional holidays (Eid al-Fitr and Deepavali) with dates to be announced
 - **Thingyan 2026:** 9-day festival (April 11-19)
-- **Substitute Working Day:** January 10, 2026 (Saturday) for Independence Day
-- **Lunar-Dependent Dates:** Eid al-Adha, Eid al-Fitr, and Deepavali dates are subject to moon sighting
+- **Substitute Working Day:** January 10, 2026 (Saturday) is a replacement workday
+- **Lunar-Dependent Dates:** Eid al-Fitr and Deepavali are marked with \* (to be announced, subject to moon sighting)
+- **Weekend Policy:** Public holidays falling on Saturday or Sunday are NOT substituted with replacement holidays
 - **No Kayin New Year:** The holiday does not occur in 2026 (next one in early 2027)
 
 ## License

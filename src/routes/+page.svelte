@@ -57,6 +57,7 @@
 
 	const stats = $derived({
 		total: holidays.length,
+		confirmed: holidays.filter((h) => !h.startDate.includes('TBD')).length,
 		totalDays: getTotalHolidayDays()
 	});
 
@@ -67,8 +68,8 @@
 
 <svelte:head>
 	<!-- Primary Meta Tags -->
-	<title>Myanmar Public Holidays 2026 🇲🇲 | 18 Holidays · 33 Days Off</title>
-	<meta name="title" content="Myanmar Public Holidays 2026 🇲🇲 | 18 Holidays · 33 Days Off" />
+	<title>Myanmar Public Holidays 2026 🇲🇲 | 16-18 Holidays · 30+ Days Off</title>
+	<meta name="title" content="Myanmar Public Holidays 2026 🇲🇲 | 16-18 Holidays · 30+ Days Off" />
 	<meta
 		name="description"
 		content="📅 Complete calendar of Myanmar's official public holidays in 2026. Featuring 9-day Thingyan festival, Union Day, Independence Day & more. Interactive calendar view with search. မြန်မာ့ရုံးပိတ်ရက်များ ၂၀၂၆"
@@ -87,7 +88,7 @@
 	<meta property="og:title" content="🇲🇲 Myanmar Public Holidays 2026 | Plan Your Year" />
 	<meta
 		property="og:description"
-		content="📅 18 official holidays · 33 days off · 9-day Thingyan festival (Apr 11-19). Interactive calendar with bilingual support. Perfect for planning your 2026! 🎉"
+		content="📅 18 official holidays · 30+ days off · 9-day Thingyan festival (Apr 11-19). Interactive calendar with bilingual support. Perfect for planning your 2026! 🎉"
 	/>
 	<meta
 		property="og:image"
@@ -95,7 +96,7 @@
 	/>
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
-	<meta property="og:image:alt" content="Myanmar Public Holidays 2026 - 18 Holidays, 33 Days Off" />
+	<meta property="og:image:alt" content="Myanmar Public Holidays 2026 - 16-18 Holidays" />
 	<meta property="og:locale" content="en_US" />
 	<meta property="og:locale:alternate" content="my_MM" />
 	<meta property="og:site_name" content="Myanmar Holidays 2026" />
@@ -105,7 +106,7 @@
 	<meta name="twitter:url" content="https://aungmyokyaw.github.io/myanmar-public-holidays-2026/" />
 	<meta
 		name="twitter:title"
-		content="🇲🇲 Myanmar Public Holidays 2026 | 18 Holidays · 33 Days Off"
+		content="🇲🇲 Myanmar Public Holidays 2026 | 16-18 Holidays · 30+ Days Off"
 	/>
 	<meta
 		name="twitter:description"
@@ -191,8 +192,8 @@
 				<div class="stagger-2 flex animate-fade-in-up flex-wrap gap-3 opacity-0">
 					<div class="card-elevated group flex flex-col rounded-2xl px-5 py-4">
 						<div class="flex items-baseline gap-1">
-							<span class="text-3xl font-semibold text-white">{stats.total}</span>
-							<span class="text-sm text-white/30">events</span>
+							<span class="text-3xl font-semibold text-white">{stats.confirmed}</span>
+							<span class="text-sm text-white/30">confirmed</span>
 						</div>
 						<span class="mt-1 text-xs font-medium tracking-wider text-white/40 uppercase"
 							>Holidays</span
@@ -462,21 +463,21 @@
 						<h3 class="font-medium">Lunar-Dependent Dates</h3>
 					</div>
 					<p class="mt-3 text-sm leading-relaxed text-white/50">
-						Dates for <strong class="text-white/70">Eid al-Adha</strong> and
-						<strong class="text-white/70">Deepavali</strong> are projections. The Ministry of Labour confirms
-						exact dates 1-2 weeks in advance.
+						Dates for <strong class="text-white/70">Eid al-Fitr</strong> and
+						<strong class="text-white/70">Deepavali</strong> are marked with * (to be announced). Exact
+						dates are subject to moon sighting and government notification.
 					</p>
 				</div>
 
-				<!-- Double Holidays Note -->
+				<!-- Weekend Holidays Note -->
 				<div class="card-elevated rounded-2xl border-amber-500/15 p-6">
 					<div class="flex items-center gap-3 text-amber-400">
 						<CalendarCheck size={20} strokeWidth={1.5} />
-						<h3 class="font-medium">Double Holidays</h3>
+						<h3 class="font-medium">Weekend Holidays</h3>
 					</div>
 					<p class="mt-3 text-sm leading-relaxed text-white/50">
-						On <strong class="text-white/70">March 2</strong>, Peasants' Day coincides with the Full
-						Moon of Tabaung. The total of 32 holiday days remains consistent.
+						Public holidays that fall on <strong class="text-white/70">Saturday or Sunday</strong> are
+						not substituted with replacement holidays on other working days.
 					</p>
 				</div>
 

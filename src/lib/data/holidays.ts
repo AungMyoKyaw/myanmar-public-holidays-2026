@@ -36,8 +36,8 @@ export const substituteWorkDays: SubstituteWorkDay[] = [
 export const holidays: Holiday[] = [
 	{
 		id: 'new-year-2026',
-		name: "New Year's Day & Holiday",
-		nameMyanmar: 'နှစ်သစ်ကူးနေ့',
+		name: "New Year's Holidays",
+		nameMyanmar: 'နှစ်သစ်ကူးရုံးပိတ်ရက်များ',
 		startDate: '2026-01-01',
 		endDate: '2026-01-02',
 		day: 'Thu - Fri',
@@ -57,8 +57,8 @@ export const holidays: Holiday[] = [
 	},
 	{
 		id: 'union-day',
-		name: 'Union Day & Holiday',
-		nameMyanmar: 'ပြည်ထောင်စုနေ့',
+		name: "Union Day's Holidays",
+		nameMyanmar: 'ပြည်ထောင်စုနေ့ရုံးပိတ်ရက်များ',
 		startDate: '2026-02-12',
 		endDate: '2026-02-13',
 		day: 'Thu - Fri',
@@ -68,24 +68,34 @@ export const holidays: Holiday[] = [
 	},
 	{
 		id: 'chinese-new-year',
-		name: 'Chinese New Year & Holiday',
-		nameMyanmar: 'တရုတ်နှစ်သစ်ကူး',
+		name: 'Chinese New Year Holidays',
+		nameMyanmar: 'တရုတ်နှစ်သစ်ကူးရုံးပိတ်ရက်များ',
 		startDate: '2026-02-16',
 		endDate: '2026-02-17',
 		day: 'Mon - Tue',
 		category: 'cultural',
-		description: 'Lunar New Year celebration, Year of the Horse',
+		description: 'Lunar New Year celebration',
 		iconName: 'sparkles'
 	},
 	{
 		id: 'peasants-day',
-		name: "Peasants' Day & Full Moon of Tabaung",
+		name: 'Peasant Day',
 		nameMyanmar: 'တောင်သူလယ်သမားနေ့',
 		startDate: '2026-03-02',
 		day: 'Mon',
 		category: 'national',
-		description: 'Honours agricultural workers; coincides with Full Moon of Tabaung',
+		description: 'Honours agricultural workers',
 		iconName: 'wheat'
+	},
+	{
+		id: 'full-moon-tabaung',
+		name: 'Full Moon Day of Tabaung',
+		nameMyanmar: 'တပေါင်းလပြည့်နေ့',
+		startDate: '2026-03-02',
+		day: 'Mon',
+		category: 'religious',
+		description: 'Buddhist full moon festival',
+		iconName: 'moon'
 	},
 	{
 		id: 'armed-forces-day',
@@ -99,8 +109,8 @@ export const holidays: Holiday[] = [
 	},
 	{
 		id: 'thingyan',
-		name: 'Thingyan Water Festival & Myanmar New Year',
-		nameMyanmar: 'သင်္ကြန်ပွဲတော်',
+		name: 'Thingyan Holidays',
+		nameMyanmar: 'သင်္ကြန်ပွဲတော်ရုံးပိတ်ရက်များ',
 		startDate: '2026-04-11',
 		endDate: '2026-04-19',
 		day: 'Sat - Sun',
@@ -109,8 +119,8 @@ export const holidays: Holiday[] = [
 		iconName: 'droplets'
 	},
 	{
-		id: 'full-moon-kasone',
-		name: 'Full Moon Day of Kasone',
+		id: 'full-moon-kason',
+		name: 'Full Moon Day of Kason',
 		nameMyanmar: 'ကဆုန်လပြည့်နေ့',
 		startDate: '2026-04-30',
 		day: 'Thu',
@@ -129,17 +139,6 @@ export const holidays: Holiday[] = [
 		iconName: 'hard-hat'
 	},
 	{
-		id: 'eid-al-adha',
-		name: 'Eid al-Adha',
-		nameMyanmar: 'အိဒ်အလ်အဒ်ဟာ',
-		startDate: '2026-05-27',
-		day: 'Wed',
-		category: 'religious',
-		description: 'Festival of Sacrifice - date subject to moon sighting',
-		isLunarDependent: true,
-		iconName: 'moon-star'
-	},
-	{
 		id: 'martyrs-day',
 		name: "Martyrs' Day",
 		nameMyanmar: 'အာဇာနည်နေ့',
@@ -150,8 +149,8 @@ export const holidays: Holiday[] = [
 		iconName: 'flame'
 	},
 	{
-		id: 'full-moon-waso',
-		name: 'Full Moon Day of Waso',
+		id: 'full-moon-warso',
+		name: 'Full Moon Day of Warso',
 		nameMyanmar: 'ဝါဆိုလပြည့်နေ့',
 		startDate: '2026-07-29',
 		day: 'Wed',
@@ -161,8 +160,8 @@ export const holidays: Holiday[] = [
 	},
 	{
 		id: 'thadingyut',
-		name: 'Thadingyut Festival',
-		nameMyanmar: 'သီတင်းကျွတ်ပွဲတော်',
+		name: 'Thadingyut Holidays',
+		nameMyanmar: 'သီတင်းကျွတ်ပွဲတော်ရုံးပိတ်ရက်များ',
 		startDate: '2026-10-25',
 		endDate: '2026-10-27',
 		day: 'Sun - Tue',
@@ -171,20 +170,9 @@ export const holidays: Holiday[] = [
 		iconName: 'lamp'
 	},
 	{
-		id: 'deepavali',
-		name: 'Deepavali',
-		nameMyanmar: 'ဒီပါဝလီ',
-		startDate: '2026-11-08',
-		day: 'Sun',
-		category: 'religious',
-		description: 'Hindu Festival of Lights - date subject to moon sighting',
-		isLunarDependent: true,
-		iconName: 'star'
-	},
-	{
 		id: 'tazaungdaing',
-		name: 'Tazaungdaing Festival',
-		nameMyanmar: 'တန်ဆောင်တိုင်ပွဲတော်',
+		name: 'Tazaungdaing Holidays',
+		nameMyanmar: 'တန်ဆောင်တိုင်ပွဲတော်ရုံးပိတ်ရက်များ',
 		startDate: '2026-11-23',
 		endDate: '2026-11-24',
 		day: 'Mon - Tue',
@@ -203,27 +191,36 @@ export const holidays: Holiday[] = [
 		iconName: 'award'
 	},
 	{
-		id: 'eid-al-fitr',
-		name: 'Eid al-Fitr',
-		nameMyanmar: 'အိဒ်အလ်ဖစ်တာ',
-		startDate: '2026-03-06',
-		endDate: '2026-03-07',
-		day: 'Fri - Sat',
-		category: 'religious',
-		description: 'Festival of Breaking the Fast - date subject to moon sighting',
-		isLunarDependent: true,
-		iconName: 'moon'
-	},
-	// Note: Karen's (Kayin) New Year does not occur in 2026. The previous one was December 19, 2025. The next one will be in early 2027.
-	{
 		id: 'christmas',
-		name: 'Christmas Day',
-		nameMyanmar: 'ခရစ္စမတ်နေ့',
+		name: 'Christmas Holiday',
+		nameMyanmar: 'ခရစ္စမတ်ရုံးပိတ်ရက်',
 		startDate: '2026-12-25',
 		day: 'Fri',
 		category: 'international',
 		description: 'Christian celebration of the birth of Jesus Christ',
 		iconName: 'gift'
+	},
+	{
+		id: 'eid-al-fitr',
+		name: 'Eid al-Fitr',
+		nameMyanmar: 'အိဒ်အလ်ဖစ်တာ',
+		startDate: '2026-TBD',
+		day: '*',
+		category: 'religious',
+		description: 'Festival of Breaking the Fast - date to be announced (subject to moon sighting)',
+		isLunarDependent: true,
+		iconName: 'moon'
+	},
+	{
+		id: 'deepavali',
+		name: 'Deepavali',
+		nameMyanmar: 'ဒီပါဝလီ',
+		startDate: '2026-TBD',
+		day: '*',
+		category: 'religious',
+		description: 'Hindu Festival of Lights - date to be announced (subject to moon sighting)',
+		isLunarDependent: true,
+		iconName: 'star'
 	}
 ];
 
@@ -272,7 +269,11 @@ export function getHolidayDays(holiday: Holiday): number {
 }
 
 export function getTotalHolidayDays(): number {
-	return holidays.reduce((total, holiday) => total + getHolidayDays(holiday), 0);
+	return holidays.reduce((total, holiday) => {
+		// Skip TBD holidays
+		if (holiday.startDate.includes('TBD')) return total;
+		return total + getHolidayDays(holiday);
+	}, 0);
 }
 
 export function formatDate(dateString: string): string {
