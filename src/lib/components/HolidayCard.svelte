@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Holiday } from '$lib/data/holidays';
 	import {
+		type Holiday,
 		categoryColors,
 		categoryLabels,
 		formatDateRange,
@@ -9,7 +9,7 @@
 	import HolidayIcon from './HolidayIcon.svelte';
 	import { Calendar, Clock, Moon } from 'lucide-svelte';
 
-	let { holiday }: { holiday: Holiday } = $props();
+	const { holiday }: { holiday: Holiday } = $props();
 
 	const colors = $derived(categoryColors[holiday.category]);
 	const days = $derived(getHolidayDays(holiday));

@@ -91,10 +91,10 @@
 	// Load components when their views are selected
 	$effect(() => {
 		if (viewMode === 'calendar') {
-			loadCalendarView();
+			void loadCalendarView();
 		}
 		if (viewMode === 'optimizer') {
-			loadLeaveOptimizerView();
+			void loadLeaveOptimizerView();
 		}
 	});
 
@@ -102,13 +102,16 @@
 	const filteredHolidays = $derived(
 		holidays.filter((holiday) => {
 			// Search filter
-			const matchesSearch =
-				searchQuery === '' ||
-				holiday.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				holiday.nameMyanmar?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-				holiday.description?.toLowerCase().includes(searchQuery.toLowerCase());
+			if (searchQuery === '') {
+				return true;
+			}
 
-			return matchesSearch;
+			const query = searchQuery.toLowerCase();
+			const matchesName = holiday.name.toLowerCase().includes(query);
+			const matchesNameMyanmar = holiday.nameMyanmar?.toLowerCase().includes(query) ?? false;
+			const matchesDescription = holiday.description?.toLowerCase().includes(query) ?? false;
+
+			return matchesName || matchesNameMyanmar || matchesDescription;
 		})
 	);
 
@@ -149,7 +152,9 @@
 				const newTab = document.querySelector(
 					`[aria-label*="Switch to ${viewToggles[prevIndex]} view"]`
 				) as HTMLElement;
-				if (newTab) newTab.focus();
+				if (newTab) {
+					newTab.focus();
+				}
 			}, 0);
 		} else if (event.key === 'ArrowRight') {
 			event.preventDefault();
@@ -160,7 +165,9 @@
 				const newTab = document.querySelector(
 					`[aria-label*="Switch to ${viewToggles[nextIndex]} view"]`
 				) as HTMLElement;
-				if (newTab) newTab.focus();
+				if (newTab) {
+					newTab.focus();
+				}
 			}, 0);
 		}
 	}
@@ -504,7 +511,7 @@
 						onclick={() => {
 							CalendarView = null;
 							calendarTimeout = false;
-							loadCalendarView();
+							void loadCalendarView();
 						}}
 						class="flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/15"
 					>
@@ -547,7 +554,7 @@
 			<section aria-labelledby="grid-view-heading">
 				<h2 id="grid-view-heading" class="sr-only">Holiday Grid View</h2>
 				<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-					{#each filteredHolidays as holiday, i (holiday.id || holiday.name)}
+					{#each filteredHolidays as holiday, i (holiday.id ?? holiday.name)}
 						<div class="animate-fade-in-up opacity-0" style="animation-delay: {i * 30}ms">
 							<HolidayCard {holiday} />
 						</div>
@@ -577,7 +584,7 @@
 								</h2>
 							</div>
 							<div class="relative ml-6 border-l border-white/[0.08] pl-10">
-								{#each monthHolidays as holiday, i (holiday.id || holiday.name)}
+								{#each monthHolidays as holiday, i (holiday.id ?? holiday.name)}
 									<div
 										class="relative mb-8 animate-slide-in-left opacity-0 last:mb-0"
 										style="animation-delay: {i * 80}ms"
@@ -615,7 +622,7 @@
 							onclick={() => {
 								LeaveOptimizerView = null;
 								optimizerTimeout = false;
-								loadLeaveOptimizerView();
+								void loadLeaveOptimizerView();
 							}}
 							class="flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/15"
 						>
@@ -754,7 +761,7 @@
 				</p>
 
 				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					{#each substituteWorkDays as subDay, i (subDay.id || subDay.date)}
+					{#each substituteWorkDays as subDay, i (subDay.id ?? subDay.date)}
 						<div
 							class="card-elevated group animate-fade-in-up rounded-2xl border-orange-500/20 p-5 opacity-0 transition-all hover:border-orange-500/30"
 							style="animation-delay: {i * 100 + 300}ms"

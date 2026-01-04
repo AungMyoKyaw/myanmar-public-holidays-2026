@@ -9,7 +9,6 @@
 		Droplets,
 		Flower2,
 		HardHat,
-		MoonStar,
 		Flame,
 		Circle,
 		Lamp,
@@ -19,8 +18,7 @@
 		Moon,
 		Gift,
 		Calendar,
-		Building2,
-		AlertTriangle
+		Building2
 	} from 'lucide-svelte';
 
 	interface Props {
@@ -30,7 +28,7 @@
 		strokeWidth?: number;
 	}
 
-	let { name, size = 24, class: className = '', strokeWidth = 1.5 }: Props = $props();
+	const { name, size = 24, class: className = '', strokeWidth = 1.5 }: Props = $props();
 
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const iconMap: Record<string, any> = {
@@ -43,7 +41,6 @@
 		droplets: Droplets,
 		'flower-2': Flower2,
 		'hard-hat': HardHat,
-		'moon-star': MoonStar,
 		flame: Flame,
 		circle: Circle,
 		lamp: Lamp,
@@ -53,11 +50,10 @@
 		moon: Moon,
 		gift: Gift,
 		calendar: Calendar,
-		building: Building2,
-		warning: AlertTriangle
+		building: Building2
 	};
 
-	const IconComponent = $derived(iconMap[name] || Calendar);
+	const IconComponent = $derived(iconMap[name] ?? Calendar);
 </script>
 
 <IconComponent {size} class={className} {strokeWidth} />

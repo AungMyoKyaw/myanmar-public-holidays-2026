@@ -24,7 +24,7 @@ async function generateOGImage() {
 		type: 'png'
 	});
 
-	console.log(`OG image generated: ${outputPath}`);
+	console.warn(`OG image generated: ${outputPath}`);
 
 	await browser.close();
 }

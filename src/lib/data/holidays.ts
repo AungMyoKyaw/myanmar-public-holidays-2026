@@ -262,7 +262,9 @@ export const categoryLabels: Record<Holiday['category'], string> = {
 };
 
 export function getHolidayDays(holiday: Holiday): number {
-	if (!holiday.endDate) return 1;
+	if (!holiday.endDate) {
+		return 1;
+	}
 	const start = new Date(holiday.startDate);
 	const end = new Date(holiday.endDate);
 	return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
@@ -271,7 +273,9 @@ export function getHolidayDays(holiday: Holiday): number {
 export function getTotalHolidayDays(): number {
 	return holidays.reduce((total, holiday) => {
 		// Skip TBD holidays
-		if (holiday.startDate.includes('TBD')) return total;
+		if (holiday.startDate.includes('TBD')) {
+			return total;
+		}
 		return total + getHolidayDays(holiday);
 	}, 0);
 }
@@ -291,20 +295,6 @@ export function formatDateRange(holiday: Holiday): string {
 export function getMonth(dateString: string): string {
 	const date = new Date(dateString);
 	return date.toLocaleDateString('en-US', { month: 'long' });
-}
-
-export function groupHolidaysByMonth(): Map<string, Holiday[]> {
-	const grouped = new Map<string, Holiday[]>();
-
-	holidays.forEach((holiday) => {
-		const month = getMonth(holiday.startDate);
-		if (!grouped.has(month)) {
-			grouped.set(month, []);
-		}
-		grouped.get(month)!.push(holiday);
-	});
-
-	return grouped;
 }
 
 export function getUpcomingHolidays(count: number = 3): Holiday[] {

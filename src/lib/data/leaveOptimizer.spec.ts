@@ -40,7 +40,7 @@ describe('Leave Optimizer', () => {
 	it('should sort by efficiency by default', () => {
 		const suggestions = getAllLeaveSuggestions();
 		// Check that Infinity efficiency suggestions come first
-		const firstSuggestion = suggestions[0];
+		const [firstSuggestion] = suggestions;
 		expect(
 			firstSuggestion.efficiency === Infinity ||
 				suggestions.every((s) => s.efficiency <= firstSuggestion.efficiency)

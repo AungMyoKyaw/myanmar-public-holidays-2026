@@ -1,7 +1,6 @@
 // src/lib/data/leaveOptimizer.ts
 
-import type { Holiday, SubstituteWorkDay } from './holidays';
-import { holidays, substituteWorkDays } from './holidays';
+import { type Holiday, type SubstituteWorkDay, holidays, substituteWorkDays } from './holidays';
 
 export interface LeaveSuggestion {
 	id: string;
@@ -298,8 +297,12 @@ export function generateLeaveSuggestions(
 		if (a.efficiency === Infinity && b.efficiency === Infinity) {
 			return b.totalDaysOff - a.totalDaysOff; // More days first
 		}
-		if (a.efficiency === Infinity) return -1;
-		if (b.efficiency === Infinity) return 1;
+		if (a.efficiency === Infinity) {
+			return -1;
+		}
+		if (b.efficiency === Infinity) {
+			return 1;
+		}
 		return b.efficiency - a.efficiency;
 	});
 

@@ -1,6 +1,7 @@
 <script lang="ts">
-	import type { Holiday, SubstituteWorkDay } from '$lib/data/holidays';
 	import {
+		type Holiday,
+		type SubstituteWorkDay,
 		categoryColors,
 		formatDate,
 		getHolidayDays,
@@ -9,7 +10,7 @@
 	import HolidayIcon from './HolidayIcon.svelte';
 	import { Building2, AlertCircle, Moon, Clock, Search, X } from 'lucide-svelte';
 
-	let {
+	const {
 		holidays,
 		year = 2026,
 		highlightedDateRange
@@ -25,10 +26,12 @@
 	// Filter holidays for calendar search
 	const calendarFilteredHolidays = $derived(
 		holidays.filter((holiday) => {
-			if (calendarSearchQuery === '') return true;
+			if (calendarSearchQuery === '') {
+				return true;
+			}
 			const matchesSearch =
-				holiday.name.toLowerCase().includes(calendarSearchQuery.toLowerCase()) ||
-				holiday.nameMyanmar?.toLowerCase().includes(calendarSearchQuery.toLowerCase()) ||
+				holiday.name.toLowerCase().includes(calendarSearchQuery.toLowerCase()) ??
+				holiday.nameMyanmar?.toLowerCase().includes(calendarSearchQuery.toLowerCase()) ??
 				holiday.description?.toLowerCase().includes(calendarSearchQuery.toLowerCase());
 			return matchesSearch;
 		})
@@ -93,7 +96,9 @@
 	}
 
 	function isInHighlightedRange(month: number, day: number): boolean {
-		if (!highlightedDateRange) return false;
+		if (!highlightedDateRange) {
+			return false;
+		}
 		const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 		const checkDate = new Date(dateStr);
 		const startDate = new Date(highlightedDateRange.start);
@@ -186,7 +191,9 @@
 	}
 
 	function getHighlightedMonth(): number | null {
-		if (!highlightedDateRange) return null;
+		if (!highlightedDateRange) {
+			return null;
+		}
 
 		// Find the first month that contains any highlighted dates
 		for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
@@ -343,33 +350,66 @@
 												{@const day = dayIndex + 1}
 												{@const dayOfWeekForDay = (firstDay + dayIndex) % 7}
 												{@const dayHolidays = getHolidaysForDate(monthIndex, day)}
+												{@const [primaryHoliday] = dayHolidays}
 												{@const substituteDay = getSubstituteWorkDay(monthIndex, day)}
 												{@const hasHoliday = dayHolidays.length > 0}
 												{@const hasSubstitute = !!substituteDay}
 												{@const isHighlighted = isInHighlightedRange(monthIndex, day)}
-												{@const primaryHoliday = dayHolidays[0]}
 												{@const colors = primaryHoliday
 													? categoryColors[primaryHoliday.category]
 													: null}
 
-												{@const dateLabel = `${months[monthIndex]} ${day}, ${year}${hasHoliday ? ` - ${primaryHoliday.name}` : hasSubstitute ? ' - Substitute Work Day' : ''}`}
+												{@const getDateSuffix = () => {
+													if (hasHoliday) {
+														return ` - ${primaryHoliday.name}`;
+													}
+													if (hasSubstitute) {
+														return ' - Substitute Work Day';
+													}
+													return '';
+												}}
+												{@const dateLabel = `${months[monthIndex]} ${day}, ${year}${getDateSuffix()}`}
+
+												{@const getButtonClasses = () => {
+													if (isHighlighted) {
+														return 'scale-105 animate-pulse-subtle bg-amber-500/20 font-bold ring-2 ring-amber-400/60 ring-offset-2 ring-offset-[#0a0a0f] hover:z-10 hover:scale-110 hover:bg-amber-500/30';
+													}
+													if (hasSubstitute) {
+														return 'border border-orange-500/40 bg-orange-500/20 hover:z-10 hover:scale-110 hover:bg-orange-500/30';
+													}
+													if (hasHoliday) {
+														return `${colors?.bg} ${colors?.border} border hover:z-10 hover:scale-110`;
+													}
+													if (isWeekend(dayOfWeekForDay)) {
+														return 'text-rose-400/50 hover:bg-white/5';
+													}
+													return 'text-white/50 hover:bg-white/5';
+												}}
+
+												{@const getSpanClasses = () => {
+													if (isHighlighted) {
+														return 'font-bold text-amber-300';
+													}
+													if (hasSubstitute) {
+														return 'font-semibold text-orange-300';
+													}
+													if (hasHoliday) {
+														return `${colors?.text} font-semibold`;
+													}
+													return '';
+												}}
 
 												<button
 													aria-label={dateLabel}
 													class="group relative aspect-square h-full min-h-[48px] w-full min-w-[48px] rounded-lg text-xs transition-all duration-200 sm:min-h-0 sm:min-w-0 sm:text-sm
 														{isToday(monthIndex, day) ? 'ring-2 ring-amber-500/70 ring-offset-1 ring-offset-[#0a0a0f]' : ''}
-														{isHighlighted
-														? 'scale-105 animate-pulse-subtle bg-amber-500/20 font-bold ring-2 ring-amber-400/60 ring-offset-2 ring-offset-[#0a0a0f] hover:z-10 hover:scale-110 hover:bg-amber-500/30'
-														: hasSubstitute
-															? 'border border-orange-500/40 bg-orange-500/20 hover:z-10 hover:scale-110 hover:bg-orange-500/30'
-															: hasHoliday
-																? `${colors?.bg} ${colors?.border} border hover:z-10 hover:scale-110`
-																: isWeekend(dayOfWeekForDay)
-																	? 'text-rose-400/50 hover:bg-white/5'
-																	: 'text-white/50 hover:bg-white/5'}"
+														{getButtonClasses()}"
 													onmouseenter={(e) => {
-														if (hasSubstitute) showSubstituteTooltip(substituteDay, e);
-														else if (hasHoliday) showTooltip(primaryHoliday, e);
+														if (hasSubstitute) {
+															showSubstituteTooltip(substituteDay, e);
+														} else if (hasHoliday) {
+															showTooltip(primaryHoliday, e);
+														}
 													}}
 													onmouseleave={hideTooltip}
 													onfocus={() => {
@@ -377,19 +417,16 @@
 														// No tooltip shown on focus to avoid positioning issues
 													}}
 													onblur={hideTooltip}
-													onclick={() => {
-														if (hasSubstitute) openSubstituteModal(substituteDay, event);
-														else if (hasHoliday) openHolidayModal(primaryHoliday, event);
+													onclick={(event) => {
+														if (hasSubstitute && event) {
+															openSubstituteModal(substituteDay, event);
+														} else if (hasHoliday && event) {
+															openHolidayModal(primaryHoliday, event);
+														}
 													}}
 												>
 													<span
-														class="flex h-full w-full items-center justify-center {isHighlighted
-															? 'font-bold text-amber-300'
-															: hasSubstitute
-																? 'font-semibold text-orange-300'
-																: hasHoliday
-																	? colors?.text + ' font-semibold'
-																	: ''}"
+														class="flex h-full w-full items-center justify-center {getSpanClasses()}"
 													>
 														{day}
 													</span>

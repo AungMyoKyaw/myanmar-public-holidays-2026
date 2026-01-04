@@ -17,7 +17,7 @@
 		Check
 	} from 'lucide-svelte';
 
-	let {
+	const {
 		suggestion,
 		onViewCalendar
 	}: {
@@ -27,9 +27,15 @@
 
 	// Efficiency badge styling
 	const getEfficiencyBadge = (efficiency: number) => {
-		if (efficiency === Infinity) return { color: 'emerald', label: 'FREE' };
-		if (efficiency >= 3) return { color: 'emerald', label: 'Excellent' };
-		if (efficiency >= 2) return { color: 'amber', label: 'Good' };
+		if (efficiency === Infinity) {
+			return { color: 'emerald', label: 'FREE' };
+		}
+		if (efficiency >= 3) {
+			return { color: 'emerald', label: 'Excellent' };
+		}
+		if (efficiency >= 2) {
+			return { color: 'amber', label: 'Good' };
+		}
 		return { color: 'slate', label: 'Basic' };
 	};
 
@@ -50,6 +56,27 @@
 	};
 
 	const difficultyBadge = $derived(getDifficultyBadge(suggestion.difficulty));
+
+	// Helper functions for badge classes
+	const getDifficultyBadgeClasses = (color: string) => {
+		if (color === 'emerald') {
+			return 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300';
+		}
+		if (color === 'amber') {
+			return 'border-amber-500/30 bg-amber-500/15 text-amber-300';
+		}
+		return 'border-rose-500/30 bg-rose-500/15 text-rose-300';
+	};
+
+	const getEfficiencyBadgeClasses = (color: string) => {
+		if (color === 'emerald') {
+			return 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300';
+		}
+		if (color === 'amber') {
+			return 'border-amber-500/30 bg-amber-500/15 text-amber-300';
+		}
+		return 'border-slate-500/30 bg-slate-500/15 text-slate-300';
+	};
 
 	function handleViewCalendar() {
 		onViewCalendar?.(suggestion);
@@ -82,11 +109,7 @@
 			<!-- Difficulty badge -->
 			<span
 				class="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold tracking-wide uppercase
-				{difficultyBadge.color === 'emerald'
-					? 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300'
-					: difficultyBadge.color === 'amber'
-						? 'border-amber-500/30 bg-amber-500/15 text-amber-300'
-						: 'border-rose-500/30 bg-rose-500/15 text-rose-300'}"
+			{getDifficultyBadgeClasses(difficultyBadge.color)}"
 			>
 				<difficultyBadge.Icon size={13} strokeWidth={2.5} aria-hidden="true" />
 				{suggestion.difficulty}
@@ -95,11 +118,7 @@
 			<!-- Efficiency badge -->
 			<span
 				class="inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold tracking-wide uppercase
-				{efficiencyBadge.color === 'emerald'
-					? 'border-emerald-500/30 bg-emerald-500/15 text-emerald-300'
-					: efficiencyBadge.color === 'amber'
-						? 'border-amber-500/30 bg-amber-500/15 text-amber-300'
-						: 'border-slate-500/30 bg-slate-500/15 text-slate-300'}"
+			{getEfficiencyBadgeClasses(efficiencyBadge.color)}"
 			>
 				<TrendingUp size={13} strokeWidth={2.5} aria-hidden="true" />
 				{efficiencyBadge.label}

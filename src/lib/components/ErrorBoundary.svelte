@@ -6,7 +6,7 @@
 		children: import('svelte').Snippet;
 	}
 
-	let { children }: Props = $props();
+	const { children }: Props = $props();
 
 	let error = $state<string | null>(null);
 	let errorInfo = $state<string | null>(null);
@@ -14,7 +14,7 @@
 	function handleError(e: unknown) {
 		console.error('ErrorBoundary caught error:', e);
 		error = e instanceof Error ? e.message : 'An unexpected error occurred';
-		errorInfo = e instanceof Error ? e.stack || null : null;
+		errorInfo = e instanceof Error ? (e.stack ?? null) : null;
 	}
 
 	// Catch errors during component lifecycle
@@ -35,7 +35,7 @@
 
 <svelte:window
 	on:unhandledrejection={(e: PromiseRejectionEvent) => handleError(e.reason)}
-	on:error={(e: ErrorEvent) => handleError(e)}
+	on:error={(e) => handleError(e)}
 />
 
 {#if error}

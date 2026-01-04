@@ -6,7 +6,7 @@
 	import { CalendarDays, TrendingUp, Clock, Filter, X, SlidersHorizontal } from 'lucide-svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 
-	let {
+	const {
 		onViewCalendar
 	}: {
 		onViewCalendar?: (suggestion: LeaveSuggestion) => void;
@@ -16,7 +16,7 @@
 	let firstFocusable = $state<HTMLElement>();
 	let lastFocusable = $state<HTMLElement>();
 
-	let suggestions: LeaveSuggestion[] = allLeaveSuggestions;
+	const suggestions: LeaveSuggestion[] = allLeaveSuggestions;
 
 	function handleFilterPanelKeydown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
@@ -26,16 +26,20 @@
 
 		if (event.key === 'Tab') {
 			if (event.shiftKey) {
-				// Shift+Tab: if we're at the first element, go to last
+				// Shift+Tab: if we're at first element, go to last
 				if (document.activeElement === firstFocusable) {
 					event.preventDefault();
-					lastFocusable.focus();
+					if (lastFocusable) {
+						lastFocusable.focus();
+					}
 				}
 			} else {
-				// Tab: if we're at the last element, go to first
+				// Tab: if we're at last element, go to first
 				if (document.activeElement === lastFocusable) {
 					event.preventDefault();
-					firstFocusable.focus();
+					if (firstFocusable) {
+						firstFocusable.focus();
+					}
 				}
 			}
 		}
@@ -52,8 +56,12 @@
 				firstFocusable = focusableElements[0] as HTMLElement;
 				lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
 
-				// Focus the first element when panel opens
-				setTimeout(() => firstFocusable.focus(), 100);
+				// Focus first element when panel opens
+				setTimeout(() => {
+					if (firstFocusable) {
+						firstFocusable.focus();
+					}
+				}, 100);
 			}
 
 			// Add keydown listener
@@ -62,7 +70,8 @@
 			return () => {
 				document.removeEventListener('keydown', handleFilterPanelKeydown);
 			};
-		} else if (!showFilters) {
+		}
+		if (!showFilters) {
 			// When panel closes, return focus to the filter toggle button
 			setTimeout(() => {
 				const filterToggle = document.querySelector('[aria-label="Toggle filters"]') as HTMLElement;
@@ -94,7 +103,7 @@
 
 	// Filtered and sorted suggestions
 	const filteredSuggestions = $derived(() => {
-		let filtered = suggestions.filter((suggestion: LeaveSuggestion) => {
+		const filtered = suggestions.filter((suggestion: LeaveSuggestion) => {
 			// Max leave days filter
 			if (maxLeaveDays !== null && suggestion.leaveRequired > maxLeaveDays) {
 				return false;
@@ -132,8 +141,12 @@
 					if (a.efficiency === Infinity && b.efficiency === Infinity) {
 						return b.totalDaysOff - a.totalDaysOff;
 					}
-					if (a.efficiency === Infinity) return -1;
-					if (b.efficiency === Infinity) return 1;
+					if (a.efficiency === Infinity) {
+						return -1;
+					}
+					if (b.efficiency === Infinity) {
+						return 1;
+					}
 					return b.efficiency - a.efficiency;
 
 				case 'days':
