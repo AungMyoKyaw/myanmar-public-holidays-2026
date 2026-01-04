@@ -320,7 +320,7 @@
 						</div>
 					</div>
 				{:else}
-					<table role="grid" class="w-full border-collapse">
+					<table role="grid" class="w-full table-fixed border-collapse">
 						<thead>
 							<tr>
 								{#each weekDays as day, i (i)}
@@ -328,7 +328,7 @@
 										role="columnheader"
 										scope="col"
 										abbr={weekDayFullNames[i]}
-										class="pb-2 text-center text-[11px] font-medium {isWeekend(i)
+										class="w-[14.285%] pb-2 text-center text-[11px] font-medium {isWeekend(i)
 											? 'text-rose-400/50'
 											: 'text-white/30'}"
 									>
@@ -343,7 +343,7 @@
 									{#each Array(7) as __, dayOfWeek (dayOfWeek)}
 										{@const dayIndex = weekIndex * 7 + dayOfWeek - firstDay}
 										{@const isEmpty = dayIndex < 0 || dayIndex >= daysInMonth}
-										<td role="gridcell" class="p-0">
+										<td role="gridcell" class="w-[14.285%] p-0">
 											{#if isEmpty}
 												<div class="aspect-square"></div>
 											{:else}
@@ -401,9 +401,9 @@
 
 												<button
 													aria-label={dateLabel}
-													class="group relative aspect-square h-full min-h-[48px] w-full min-w-[48px] rounded-lg text-xs transition-all duration-200 sm:min-h-0 sm:min-w-0 sm:text-sm
-														{isToday(monthIndex, day) ? 'ring-2 ring-amber-500/70 ring-offset-1 ring-offset-[#0a0a0f]' : ''}
-														{getButtonClasses()}"
+													class="group relative aspect-square h-full min-h-[48px] w-full max-w-full min-w-[48px] overflow-hidden rounded-lg text-xs tabular-nums transition-all duration-200 sm:min-h-0 sm:min-w-0 sm:text-sm
+													{isToday(monthIndex, day) ? 'ring-2 ring-amber-500/70 ring-offset-1 ring-offset-[#0a0a0f]' : ''}
+													{getButtonClasses()}"
 													onmouseenter={(e) => {
 														if (hasSubstitute) {
 															showSubstituteTooltip(substituteDay, e);
