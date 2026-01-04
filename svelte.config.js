@@ -10,7 +10,7 @@ const config = {
 			pages: 'build',
 			assets: 'build',
 			fallback: '404.html',
-			precompress: false,
+			precompress: true, // Enable gzip/brotli precompression for static hosting
 			strict: true
 		}),
 		paths: {

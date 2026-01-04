@@ -82,7 +82,7 @@ function findNaturalBridges(holidays: Holiday[]): LeaveSuggestion[] {
 			strategy: 'natural',
 			difficulty: 'easy',
 			savingsText: 'Take 0 days, get 6 days off (FREE!)',
-			savingsTextMyanmar: 'ရက် ၀ ယူပြီး ရက် ၆ အနားရ (အခမဲ့!)',
+			savingsTextMyanmar: '၆ ရက် အနားရ (အခမဲ့!)',
 			primaryMonth: 'February',
 			monthsSpanned: ['February'],
 			isBestValue: false
@@ -97,7 +97,7 @@ function findNaturalBridges(holidays: Holiday[]): LeaveSuggestion[] {
 		suggestions.push({
 			id: 'labour-weekend-natural',
 			title: 'Labour Day Long Weekend',
-			titleMyanmar: 'အလုပ်သမားနေ့ ရက်သားရှည်',
+			titleMyanmar: 'အလုပ်သမားနေ့ ပိတ်ရက်ရှည်',
 			leaveRequired: 0,
 			totalDaysOff: 4,
 			efficiency: Infinity,
@@ -108,7 +108,7 @@ function findNaturalBridges(holidays: Holiday[]): LeaveSuggestion[] {
 			strategy: 'natural',
 			difficulty: 'easy',
 			savingsText: 'Take 0 days, get 4 days off (FREE!)',
-			savingsTextMyanmar: 'ရက် ၀ ယူပြီး ရက် ၄ အနားရ (အခမဲ့!)',
+			savingsTextMyanmar: '၄ ရက် အနားရ (အခမဲ့!)',
 			primaryMonth: 'May',
 			monthsSpanned: ['April', 'May'],
 			isBestValue: false
@@ -129,7 +129,7 @@ function findShortBridges(holidays: Holiday[]): LeaveSuggestion[] {
 		suggestions.push({
 			id: 'new-year-bridge',
 			title: 'New Year Bridge',
-			titleMyanmar: 'နှစ်သစ်ကူး ကြားထဲအလုပ်ရက်',
+			titleMyanmar: 'အင်္ဂလိပ် နှစ်သစ်ကူး ပိတ်ရက်ရှည်',
 			leaveRequired: 2,
 			totalDaysOff: 7,
 			efficiency: 3.5,
@@ -160,7 +160,7 @@ function findExtensions(holidays: Holiday[]): LeaveSuggestion[] {
 		suggestions.push({
 			id: 'thingyan-extension',
 			title: 'Thingyan Super Break',
-			titleMyanmar: 'သင်္ကြန် စူပါအနားရက်',
+			titleMyanmar: 'သင်္ကြန် အနားရက်',
 			leaveRequired: 5,
 			totalDaysOff: 16,
 			efficiency: 3.2,

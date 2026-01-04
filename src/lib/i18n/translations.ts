@@ -3,7 +3,7 @@
 export const translations = {
 	leaveOptimizer: {
 		title: 'Smart Leave Planner',
-		titleMyanmar: 'အားလပ်ရက်စီစဉ်ရေးအတွက် အတိုင်းအတာ အကြံပြုချက်များ',
+		titleMyanmar: 'အားလပ်ရက်စီစဉ်ရေး',
 		subtitle: 'Maximize your 2026 holidays by strategically taking leave around public holidays',
 		sortBy: 'Sort by:',
 		bestEfficiency: 'Best Efficiency',
@@ -28,20 +28,20 @@ export const translations = {
 		takeDaysGetDaysMyanmar: (leave: number, total: number) =>
 			`ရက် ${leave} ယူပြီး ရက် ${total} အနားရ`,
 		freeBreak: 'Take 0 days, get {days} days off (FREE!)',
-		freeBreakMyanmar: 'ရက် ၀ ယူပြီး ရက် {days} အနားရ (အခမဲ့!)'
+		freeBreakMyanmar: '{days} ရက် အနားရ (အခမဲ့!)'
 	},
 	suggestions: {
 		'union-chinese-natural': {
 			title: 'Union Day + Chinese New Year',
 			titleMyanmar: 'ပြည်ထောင်စုနေ့ + တရုတ်နှစ်သစ်ကူး',
 			savingsText: 'Take 0 days, get 6 days off (FREE!)',
-			savingsTextMyanmar: 'ရက် ၀ ယူပြီး ရက် ၆ အနားရ (အခမဲ့!)'
+			savingsTextMyanmar: '၆ ရက် အနားရ (အခမဲ့!)'
 		},
 		'labour-weekend-natural': {
 			title: 'Labour Day Long Weekend',
 			titleMyanmar: 'အလုပ်သမားနေ့ ရက်သားရှည်',
 			savingsText: 'Take 0 days, get 4 days off (FREE!)',
-			savingsTextMyanmar: 'ရက် ၀ ယူပြီး ရက် ၄ အနားရ (အခမဲ့!)'
+			savingsTextMyanmar: '၄ ရက် အနားရ (အခမဲ့!)'
 		},
 		'new-year-bridge': {
 			title: 'New Year Bridge',

@@ -310,7 +310,12 @@ body {
 	height: 100%;
 	pointer-events: none;
 	opacity: 0.02;
-	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+	background-image: radial-gradient(
+		circle at 50% 50%,
+		rgba(255, 255, 255, 0.03) 1px,
+		transparent 1px
+	);
+	background-size: 4px 4px;
 	z-index: 9999;
 }
 
@@ -326,13 +331,30 @@ body {
 	outline-offset: 2px;
 }
 
-/* Smooth Transitions for All Interactive Elements */
-button,
-a,
-input,
-select,
-textarea {
-	transition: all 0.2s ease;
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+
+	.animate-fade-in,
+	.animate-fade-in-up,
+	.animate-fade-in-down,
+	.animate-scale-in,
+	.animate-slide-in-left,
+	.animate-slide-in-right,
+	.animate-shimmer,
+	.animate-float,
+	.animate-pulse-glow,
+	.animate-pulse-subtle,
+	.animate-gradient-shift {
+		animation: none !important;
+	}
 }
 
 /* Category Color System */
