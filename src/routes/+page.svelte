@@ -12,6 +12,7 @@
 	import {
 		Search,
 		CalendarDays,
+		Calendar,
 		LayoutGrid,
 		List,
 		Building2,
@@ -22,7 +23,9 @@
 		Heart,
 		TreePine,
 		X,
-		Github
+		Github,
+		AlertTriangle,
+		RefreshCw
 	} from 'lucide-svelte';
 
 	let searchQuery = $state('');
@@ -35,15 +38,53 @@
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let LeaveOptimizerView: any = $state(null);
 
+	// Loading states and timeouts
+	let calendarLoading = $state(false);
+	let optimizerLoading = $state(false);
+	let calendarTimeout = $state(false);
+	let optimizerTimeout = $state(false);
+
 	async function loadCalendarView() {
-		if (!CalendarView) {
-			CalendarView = (await import('$lib/components/CalendarView.svelte')).default;
+		if (!CalendarView && !calendarLoading) {
+			calendarLoading = true;
+			calendarTimeout = false;
+
+			// Set timeout for loading
+			const timeoutId = setTimeout(() => {
+				calendarTimeout = true;
+			}, 10000); // 10 second timeout
+
+			try {
+				CalendarView = (await import('$lib/components/CalendarView.svelte')).default;
+			} catch (error) {
+				console.error('Failed to load CalendarView:', error);
+				calendarTimeout = true;
+			} finally {
+				clearTimeout(timeoutId);
+				calendarLoading = false;
+			}
 		}
 	}
 
 	async function loadLeaveOptimizerView() {
-		if (!LeaveOptimizerView) {
-			LeaveOptimizerView = (await import('$lib/components/LeaveOptimizerView.svelte')).default;
+		if (!LeaveOptimizerView && !optimizerLoading) {
+			optimizerLoading = true;
+			optimizerTimeout = false;
+
+			// Set timeout for loading
+			const timeoutId = setTimeout(() => {
+				optimizerTimeout = true;
+			}, 10000); // 10 second timeout
+
+			try {
+				LeaveOptimizerView = (await import('$lib/components/LeaveOptimizerView.svelte')).default;
+			} catch (error) {
+				console.error('Failed to load LeaveOptimizerView:', error);
+				optimizerTimeout = true;
+			} finally {
+				clearTimeout(timeoutId);
+				optimizerLoading = false;
+			}
 		}
 	}
 
@@ -93,6 +134,35 @@
 
 	function clearSearch() {
 		searchQuery = '';
+	}
+
+	function handleViewToggleKeydown(event: KeyboardEvent) {
+		const viewToggles = ['calendar', 'grid', 'timeline', 'optimizer'] as const;
+		const currentIndex = viewToggles.indexOf(viewMode);
+
+		if (event.key === 'ArrowLeft') {
+			event.preventDefault();
+			const prevIndex = currentIndex > 0 ? currentIndex - 1 : viewToggles.length - 1;
+			viewMode = viewToggles[prevIndex];
+			// Focus the new tab button
+			setTimeout(() => {
+				const newTab = document.querySelector(
+					`[aria-label*="Switch to ${viewToggles[prevIndex]} view"]`
+				) as HTMLElement;
+				if (newTab) newTab.focus();
+			}, 0);
+		} else if (event.key === 'ArrowRight') {
+			event.preventDefault();
+			const nextIndex = currentIndex < viewToggles.length - 1 ? currentIndex + 1 : 0;
+			viewMode = viewToggles[nextIndex];
+			// Focus the new tab button
+			setTimeout(() => {
+				const newTab = document.querySelector(
+					`[aria-label*="Switch to ${viewToggles[nextIndex]} view"]`
+				) as HTMLElement;
+				if (newTab) newTab.focus();
+			}, 0);
+		}
 	}
 
 	function handleViewCalendarFromOptimizer(suggestion: LeaveSuggestion) {
@@ -182,6 +252,14 @@
 </svelte:head>
 
 <div class="noise-overlay mesh-bg min-h-screen text-white">
+	<!-- Skip links for keyboard navigation -->
+	<nav class="sr-only focus-within:not-sr-only" aria-label="Skip navigation">
+		<div class="fixed top-4 left-4 z-50 flex flex-col gap-2">
+			<a href="#main-content" class="skip-link">Skip to main content</a>
+			<a href="#search" class="skip-link">Skip to search</a>
+			<a href="#view-toggles" class="skip-link">Skip to view options</a>
+		</div>
+	</nav>
 	<!-- Animated background orbs -->
 	<div class="pointer-events-none fixed inset-0 overflow-hidden">
 		<div
@@ -208,11 +286,7 @@
 						<div
 							class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 text-amber-400 ring-1 ring-amber-500/20"
 						>
-							<svg viewBox="0 0 36 36" class="h-5 w-5" fill="currentColor">
-								<path
-									d="M32.5 5H28V1a1 1 0 00-2 0v4H10V1a1 1 0 00-2 0v4H3.5C1.57 5 0 6.57 0 8.5v24C0 34.43 1.57 36 3.5 36h29c1.93 0 3.5-1.57 3.5-3.5v-24C36 6.57 34.43 5 32.5 5zM34 32.5c0 .83-.67 1.5-1.5 1.5h-29C2.67 34 2 33.33 2 32.5V14h32v18.5zM34 12H2V8.5C2 7.67 2.67 7 3.5 7H8v2a1 1 0 002 0V7h16v2a1 1 0 002 0V7h4.5c.83 0 1.5.67 1.5 1.5V12z"
-								/>
-							</svg>
+							<Calendar size={20} strokeWidth={1.75} />
 						</div>
 						<div
 							class="h-6 w-px bg-gradient-to-b from-transparent via-amber-500/30 to-transparent"
@@ -227,7 +301,7 @@
 						<span class="text-gradient-gold animate-shimmer bg-[length:200%_auto]"> Myanmar </span>
 						<span class="text-white/90"> Holidays</span>
 					</h1>
-					<p class="font-myanmar mt-3 text-base text-white/40 sm:text-lg">
+					<p class="font-myanmar mt-3 text-base tracking-wide text-white/60 sm:text-lg">
 						မြန်မာနိုင်ငံ အများပြည်သူရုံးပိတ်ရက်များ ၂၀၂၆
 					</p>
 				</div>
@@ -257,30 +331,33 @@
 		</div>
 	</header>
 
-	<main class="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+	<main
+		class="relative z-10 mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8"
+		id="main-content"
+	>
 		<!-- Filters Section -->
-		<div
-			class="stagger-3 mb-8 flex animate-fade-in-up flex-col gap-4 opacity-0 sm:mb-12 lg:flex-row lg:items-center lg:justify-between"
-		>
+		<div class="mb-8 flex flex-col gap-4 sm:mb-12 lg:flex-row lg:items-center lg:justify-between">
 			<!-- Search -->
-			<div class="relative w-full lg:max-w-md">
+			<div class="relative w-full lg:max-w-md" role="search">
 				<Search
 					size={18}
-					strokeWidth={1.5}
-					class="absolute top-1/2 left-4 -translate-y-1/2 text-white/25"
+					strokeWidth={2}
+					class="absolute top-1/2 left-4 z-10 -translate-y-1/2 text-white"
 				/>
 				<input
 					type="text"
 					bind:value={searchQuery}
 					placeholder="Search holidays..."
 					class="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] py-3 pr-10 pl-12 text-sm text-white placeholder-white/30 backdrop-blur-sm transition-all focus:border-amber-500/40 focus:bg-white/[0.06] focus:ring-2 focus:ring-amber-500/10 focus:outline-none"
+					id="search"
 				/>
 				{#if searchQuery}
 					<button
 						onclick={clearSearch}
 						class="absolute top-1/2 right-3 -translate-y-1/2 rounded-md p-1 text-white/30 transition-colors hover:bg-white/10 hover:text-white/60"
+						aria-label="Clear search"
 					>
-						<X size={16} strokeWidth={2} />
+						<X size={16} strokeWidth={2} aria-hidden="true" />
 					</button>
 				{/if}
 			</div>
@@ -288,6 +365,11 @@
 			<!-- View toggle -->
 			<div
 				class="flex items-center gap-1 rounded-xl border border-white/[0.08] bg-white/[0.03] p-1"
+				id="view-toggles"
+				role="tablist"
+				aria-label="Content view options"
+				onkeydown={handleViewToggleKeydown}
+				tabindex="0"
 			>
 				<button
 					onclick={() => (viewMode = 'calendar')}
@@ -296,9 +378,14 @@
 						? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white/70'}"
 					title="Calendar View"
+					aria-label="Switch to calendar view showing monthly holiday grids"
+					role="tab"
+					aria-selected={viewMode === 'calendar'}
+					tabindex={viewMode === 'calendar' ? 0 : -1}
 				>
-					<CalendarDays size={16} strokeWidth={1.5} />
+					<CalendarDays size={16} strokeWidth={1.5} aria-hidden="true" />
 					<span class="hidden sm:inline">Calendar</span>
+					<span class="sr-only sm:hidden">Calendar view</span>
 				</button>
 				<button
 					onclick={() => (viewMode = 'grid')}
@@ -307,9 +394,14 @@
 						? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white/70'}"
 					title="Grid View"
+					aria-label="Switch to grid view showing holiday cards in columns"
+					role="tab"
+					aria-selected={viewMode === 'grid'}
+					tabindex={viewMode === 'grid' ? 0 : -1}
 				>
-					<LayoutGrid size={16} strokeWidth={1.5} />
+					<LayoutGrid size={16} strokeWidth={1.5} aria-hidden="true" />
 					<span class="hidden sm:inline">Grid</span>
+					<span class="sr-only sm:hidden">Grid view</span>
 				</button>
 				<button
 					onclick={() => (viewMode = 'timeline')}
@@ -318,9 +410,14 @@
 						? 'bg-white/10 text-white'
 						: 'text-white/40 hover:text-white/70'}"
 					title="Timeline View"
+					aria-label="Switch to timeline view showing holidays organized by month"
+					role="tab"
+					aria-selected={viewMode === 'timeline'}
+					tabindex={viewMode === 'timeline' ? 0 : -1}
 				>
-					<List size={16} strokeWidth={1.5} />
+					<List size={16} strokeWidth={1.5} aria-hidden="true" />
 					<span class="hidden sm:inline">Timeline</span>
+					<span class="sr-only sm:hidden">Timeline view</span>
 				</button>
 				<button
 					onclick={() => (viewMode = 'optimizer')}
@@ -329,9 +426,12 @@
 						? 'bg-amber-500/20 text-amber-400'
 						: 'text-white/40 hover:text-white/70'}"
 					title="Leave Planner"
+					aria-pressed={viewMode === 'optimizer'}
+					aria-label="Switch to leave planner view for optimizing holiday combinations"
 				>
-					<CalendarCheck size={16} strokeWidth={1.5} />
+					<CalendarCheck size={16} strokeWidth={1.5} aria-hidden="true" />
 					<span class="hidden sm:inline">Leave Planner</span>
+					<span class="sr-only sm:hidden">Leave planner view</span>
 				</button>
 			</div>
 		</div>
@@ -347,100 +447,258 @@
 			</div>
 		{/if}
 
+		<!-- Live region for screen readers - search results announcements -->
+		<div aria-live="polite" aria-atomic="true" class="sr-only">
+			{#if filteredHolidays.length !== holidays.length}
+				{filteredHolidays.length === 0
+					? 'No holidays found matching your search criteria'
+					: `Showing ${filteredHolidays.length} of ${holidays.length} holidays`}
+			{/if}
+		</div>
+
+		<!-- Live region for screen readers - view change announcements -->
+		<div aria-live="polite" aria-atomic="true" class="sr-only">
+			{#if viewMode === 'calendar'}
+				Calendar view selected, showing monthly holiday calendar
+			{:else if viewMode === 'grid'}
+				Grid view selected, showing holiday cards in columns
+			{:else if viewMode === 'timeline'}
+				Timeline view selected, showing holidays organized by month
+			{:else if viewMode === 'optimizer'}
+				Leave planner view selected, showing holiday combination optimizer
+			{/if}
+		</div>
+
+		<!-- Live region for screen readers - loading status announcements -->
+		<div aria-live="polite" aria-atomic="true" class="sr-only">
+			{#if calendarLoading}
+				Loading calendar view...
+			{:else if optimizerLoading}
+				Loading leave planner...
+			{:else if calendarTimeout}
+				Calendar view failed to load, retry button available
+			{:else if optimizerTimeout}
+				Leave planner failed to load, retry button available
+			{/if}
+		</div>
+
 		<!-- Calendar View -->
 		{#if viewMode === 'calendar'}
+			<section aria-labelledby="calendar-view-heading" class="sr-only">
+				<h2 id="calendar-view-heading" class="sr-only">Calendar View</h2>
+			</section>
 			{#if CalendarView}
 				<CalendarView holidays={filteredHolidays} year={2026} {highlightedDateRange} />
-			{:else}
+			{:else if calendarTimeout}
 				<div
 					class="flex animate-scale-in flex-col items-center justify-center py-24 text-center opacity-0"
 				>
 					<div
-						class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/[0.04] text-white/20"
+						class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 text-red-400"
 					>
-						<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="1.5"
-								d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-							/>
-						</svg>
+						<AlertTriangle size={32} strokeWidth={1.5} />
 					</div>
-					<h3 class="font-display text-lg text-white/70">Loading Calendar...</h3>
-					<p class="mt-1 text-sm text-white/40">Please wait while we load the calendar view</p>
+					<h3 class="font-display text-lg text-white/70">Loading Timeout</h3>
+					<p class="mt-1 mb-6 text-sm text-white/40">Calendar view took too long to load</p>
+					<button
+						onclick={() => {
+							CalendarView = null;
+							calendarTimeout = false;
+							loadCalendarView();
+						}}
+						class="flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/15"
+					>
+						<RefreshCw size={16} strokeWidth={1.5} />
+						Try Again
+					</button>
+				</div>
+			{:else}
+				<!-- Calendar Loading Skeleton -->
+				<div class="space-y-4">
+					<!-- Month headers skeleton -->
+					<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+						{#each Array.from({ length: 12 }) as _, i (i)}
+							<div class="card-elevated animate-pulse rounded-2xl p-4 sm:p-5">
+								<!-- Month title skeleton -->
+								<div class="mb-4 flex items-center justify-between">
+									<div class="h-6 w-20 rounded bg-white/10"></div>
+									<div class="h-6 w-8 rounded-full bg-white/5"></div>
+								</div>
+
+								<!-- Calendar grid skeleton -->
+								<div class="grid grid-cols-7 gap-1">
+									<!-- Weekday headers -->
+									{#each Array.from({ length: 7 }) as _, i (i)}
+										<div class="h-4 rounded bg-white/5"></div>
+									{/each}
+
+									<!-- Calendar days -->
+									{#each Array.from({ length: 35 }) as _, i (i)}
+										<div class="aspect-square rounded-lg bg-white/5"></div>
+									{/each}
+								</div>
+							</div>
+						{/each}
+					</div>
 				</div>
 			{/if}
 		{:else if viewMode === 'grid'}
 			<!-- Grid View -->
-			<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-				{#each filteredHolidays as holiday, i (holiday.id)}
-					<div class="animate-fade-in-up opacity-0" style="animation-delay: {i * 50}ms">
-						<HolidayCard {holiday} />
-					</div>
-				{/each}
-			</div>
+			<section aria-labelledby="grid-view-heading">
+				<h2 id="grid-view-heading" class="sr-only">Holiday Grid View</h2>
+				<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+					{#each filteredHolidays as holiday, i (holiday.id || holiday.name)}
+						<div class="animate-fade-in-up opacity-0" style="animation-delay: {i * 30}ms">
+							<HolidayCard {holiday} />
+						</div>
+					{/each}
+				</div>
+			</section>
 		{:else if viewMode === 'timeline'}
 			<!-- Timeline View -->
-			<div class="space-y-16">
-				{#each Array.from(holidaysByMonth.entries()) as [month, monthHolidays], monthIndex (month)}
-					<section
-						class="animate-fade-in-up opacity-0"
-						style="animation-delay: {monthIndex * 100}ms"
-					>
-						<div class="sticky top-0 z-20 -mx-4 mb-8 bg-[#050507]/90 px-4 py-4 backdrop-blur-xl">
-							<h2 class="font-display flex items-center gap-4 text-2xl">
-								<span class="h-px w-12 bg-gradient-to-r from-amber-500/50 to-transparent"></span>
-								<span class="text-white/90">{month}</span>
-								<span
-									class="rounded-lg bg-white/[0.06] px-3 py-1 text-sm font-normal text-white/40"
-								>
-									{monthHolidays.length}
-									{monthHolidays.length === 1 ? 'holiday' : 'holidays'}
-								</span>
-							</h2>
-						</div>
-						<div class="relative ml-6 border-l border-white/[0.08] pl-10">
-							{#each monthHolidays as holiday, i (holiday.id)}
-								<div
-									class="relative mb-8 animate-slide-in-left opacity-0 last:mb-0"
-									style="animation-delay: {i * 80}ms"
-								>
-									<!-- Timeline dot -->
+			<section aria-labelledby="timeline-view-heading">
+				<h2 id="timeline-view-heading" class="sr-only">Holiday Timeline View</h2>
+				<div class="space-y-16">
+					{#each Array.from(holidaysByMonth.entries()) as [month, monthHolidays], monthIndex (month)}
+						<section
+							class="animate-fade-in-up opacity-0"
+							style="animation-delay: {monthIndex * 100}ms"
+						>
+							<div class="sticky top-0 z-20 -mx-4 mb-8 bg-[#050507]/90 px-4 py-4 backdrop-blur-xl">
+								<h2 class="font-display flex items-center gap-4 text-2xl">
+									<span class="h-px w-12 bg-gradient-to-r from-amber-500/50 to-transparent"></span>
+									<span class="text-white/90">{month}</span>
+									<span
+										class="rounded-lg bg-white/[0.06] px-3 py-1 text-sm font-normal text-white/40"
+									>
+										{monthHolidays.length}
+										{monthHolidays.length === 1 ? 'holiday' : 'holidays'}
+									</span>
+								</h2>
+							</div>
+							<div class="relative ml-6 border-l border-white/[0.08] pl-10">
+								{#each monthHolidays as holiday, i (holiday.id || holiday.name)}
 									<div
-										class="absolute top-8 -left-[43px] h-3 w-3 rounded-full border-2 border-amber-500/60 bg-[#050507]"
-									></div>
-									<HolidayCard {holiday} />
+										class="relative mb-8 animate-slide-in-left opacity-0 last:mb-0"
+										style="animation-delay: {i * 80}ms"
+									>
+										<!-- Timeline dot -->
+										<div
+											class="absolute top-8 -left-[43px] h-3 w-3 rounded-full border-2 border-amber-500/60 bg-[#050507]"
+										></div>
+										<HolidayCard {holiday} />
+									</div>
+								{/each}
+							</div>
+						</section>
+					{/each}
+				</div>
+			</section>
+		{:else}
+			<!-- Leave Optimizer View -->
+			<section aria-labelledby="optimizer-view-heading">
+				<h2 id="optimizer-view-heading" class="sr-only">Leave Planner View</h2>
+				{#if LeaveOptimizerView}
+					<LeaveOptimizerView onViewCalendar={handleViewCalendarFromOptimizer} />
+				{:else if optimizerTimeout}
+					<div
+						class="flex animate-scale-in flex-col items-center justify-center py-24 text-center opacity-0"
+					>
+						<div
+							class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-red-500/10 text-red-400"
+						>
+							<AlertTriangle size={32} strokeWidth={1.5} />
+						</div>
+						<h3 class="font-display text-lg text-white/70">Loading Timeout</h3>
+						<p class="mt-1 mb-6 text-sm text-white/40">Leave planner took too long to load</p>
+						<button
+							onclick={() => {
+								LeaveOptimizerView = null;
+								optimizerTimeout = false;
+								loadLeaveOptimizerView();
+							}}
+							class="flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/15"
+						>
+							<RefreshCw size={16} strokeWidth={1.5} />
+							Try Again
+						</button>
+					</div>
+				{:else}
+					<!-- Leave Optimizer Loading Skeleton -->
+					<div class="space-y-8">
+						<!-- Header skeleton -->
+						<div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+							<div>
+								<div class="mb-2 h-8 w-64 rounded bg-white/10"></div>
+								<div class="h-4 w-96 rounded bg-white/5"></div>
+								<div class="mt-1 h-4 w-80 rounded bg-white/5"></div>
+							</div>
+							<!-- Stats skeleton -->
+							<div class="flex flex-wrap gap-3">
+								{#each Array.from({ length: 3 }) as _, i (i)}
+									<div class="flex flex-col rounded-xl bg-white/5 px-4 py-3">
+										<div class="mb-1 h-6 w-12 rounded bg-white/10"></div>
+										<div class="h-3 w-16 rounded bg-white/5"></div>
+									</div>
+								{/each}
+							</div>
+						</div>
+
+						<!-- Controls skeleton -->
+						<div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+							<div class="flex items-center gap-3">
+								<div class="h-4 w-16 rounded bg-white/5"></div>
+								<div class="flex items-center gap-1">
+									{#each Array.from({ length: 3 }) as _, i (i)}
+										<div class="flex items-center gap-1.5 rounded-lg bg-white/5 px-3 py-1.5">
+											<div class="h-4 w-4 rounded bg-white/10"></div>
+											<div class="h-3 w-16 rounded bg-white/10"></div>
+										</div>
+									{/each}
+								</div>
+							</div>
+							<div class="h-10 w-24 rounded-lg bg-white/5"></div>
+						</div>
+
+						<!-- Cards skeleton -->
+						<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+							{#each Array.from({ length: 6 }) as _, i (i)}
+								<div
+									class="animate-pulse rounded-2xl border border-white/[0.08] bg-white/[0.02] p-6"
+									style="animation-delay: {i * 100}ms"
+								>
+									<div class="mb-4 flex items-start justify-between">
+										<div class="flex-1">
+											<div class="mb-2 h-5 w-3/4 rounded bg-white/10"></div>
+											<div class="mb-1 h-4 w-1/2 rounded bg-white/5"></div>
+											<div class="h-3 w-2/3 rounded bg-white/5"></div>
+										</div>
+										<div class="h-6 w-16 rounded-full bg-white/5"></div>
+									</div>
+									<div class="space-y-2">
+										<div class="flex items-center gap-2">
+											<div class="h-4 w-4 rounded bg-white/5"></div>
+											<div class="h-3 w-24 rounded bg-white/10"></div>
+										</div>
+										<div class="flex items-center gap-2">
+											<div class="h-4 w-4 rounded bg-white/5"></div>
+											<div class="h-3 w-20 rounded bg-white/10"></div>
+										</div>
+										<div class="flex items-center gap-2">
+											<div class="h-4 w-4 rounded bg-white/5"></div>
+											<div class="h-3 w-28 rounded bg-white/10"></div>
+										</div>
+									</div>
+									<div class="mt-4 flex gap-2">
+										<div class="h-8 flex-1 rounded-lg bg-white/5"></div>
+										<div class="h-8 w-20 rounded-lg bg-white/5"></div>
+									</div>
 								</div>
 							{/each}
 						</div>
-					</section>
-				{/each}
-			</div>
-		{:else}
-			<!-- Leave Optimizer View -->
-			{#if LeaveOptimizerView}
-				<LeaveOptimizerView onViewCalendar={handleViewCalendarFromOptimizer} />
-			{:else}
-				<div
-					class="flex animate-scale-in flex-col items-center justify-center py-24 text-center opacity-0"
-				>
-					<div
-						class="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl bg-white/[0.04] text-white/20"
-					>
-						<svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-							<path
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								stroke-width="1.5"
-								d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
-							/>
-						</svg>
 					</div>
-					<h3 class="font-display text-lg text-white/70">Loading Leave Planner...</h3>
-					<p class="mt-1 text-sm text-white/40">Please wait while we load the optimization tools</p>
-				</div>
-			{/if}
+				{/if}
+			</section>
 		{/if}
 
 		<!-- Empty state -->
@@ -449,9 +707,9 @@
 				class="flex animate-scale-in flex-col items-center justify-center py-24 text-center opacity-0"
 			>
 				<div
-					class="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/[0.04] text-white/20"
+					class="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/[0.04] text-white/40"
 				>
-					<Search size={40} strokeWidth={1} />
+					<Search size={40} strokeWidth={1} aria-hidden="true" />
 				</div>
 				<h3 class="font-display text-xl text-white/70">No holidays found</h3>
 				<p class="mt-2 text-sm text-white/40">Try adjusting your search criteria</p>
@@ -461,9 +719,14 @@
 					}}
 					class="mt-6 flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/15"
 				>
-					<X size={16} strokeWidth={2} />
+					<X size={16} strokeWidth={2} aria-hidden="true" />
 					Clear search
 				</button>
+			</div>
+
+			<!-- Live region for screen readers - empty state announcements -->
+			<div aria-live="assertive" aria-atomic="true" class="sr-only">
+				No holidays found matching your search criteria. Try adjusting your search terms.
 			</div>
 		{/if}
 
@@ -491,7 +754,7 @@
 				</p>
 
 				<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-					{#each substituteWorkDays as subDay, i (subDay.id)}
+					{#each substituteWorkDays as subDay, i (subDay.id || subDay.date)}
 						<div
 							class="card-elevated group animate-fade-in-up rounded-2xl border-orange-500/20 p-5 opacity-0 transition-all hover:border-orange-500/30"
 							style="animation-delay: {i * 100 + 300}ms"
@@ -525,7 +788,7 @@
 				<div
 					class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-500/15 text-amber-400"
 				>
-					<Sparkles size={24} strokeWidth={1.5} />
+					<Sparkles size={24} strokeWidth={1.5} aria-hidden="true" />
 				</div>
 				<h2 class="font-display text-xl text-white/90 sm:text-2xl">Important Notes</h2>
 			</div>
@@ -547,7 +810,7 @@
 				<!-- Thingyan Note -->
 				<div class="card-elevated rounded-2xl border-rose-500/15 p-6">
 					<div class="flex items-center gap-3 text-rose-400">
-						<Droplets size={20} strokeWidth={1.5} />
+						<Droplets size={20} strokeWidth={1.5} aria-hidden="true" />
 						<h3 class="font-medium">Thingyan Festival</h3>
 					</div>
 					<p class="mt-3 text-sm leading-relaxed text-white/50">
@@ -559,7 +822,7 @@
 				<!-- Lunar Dependent Note -->
 				<div class="card-elevated rounded-2xl border-violet-500/15 p-6">
 					<div class="flex items-center gap-3 text-violet-400">
-						<Moon size={20} strokeWidth={1.5} />
+						<Moon size={20} strokeWidth={1.5} aria-hidden="true" />
 						<h3 class="font-medium">Lunar-Dependent Dates</h3>
 					</div>
 					<p class="mt-3 text-sm leading-relaxed text-white/50">
@@ -572,7 +835,7 @@
 				<!-- Weekend Holidays Note -->
 				<div class="card-elevated rounded-2xl border-amber-500/15 p-6">
 					<div class="flex items-center gap-3 text-amber-400">
-						<CalendarCheck size={20} strokeWidth={1.5} />
+						<CalendarCheck size={20} strokeWidth={1.5} aria-hidden="true" />
 						<h3 class="font-medium">Weekend Holidays</h3>
 					</div>
 					<p class="mt-3 text-sm leading-relaxed text-white/50">
@@ -584,7 +847,7 @@
 				<!-- Kayin New Year Note -->
 				<div class="card-elevated rounded-2xl border-emerald-500/15 p-6 sm:col-span-2">
 					<div class="flex items-center gap-3 text-emerald-400">
-						<TreePine size={20} strokeWidth={1.5} />
+						<TreePine size={20} strokeWidth={1.5} aria-hidden="true" />
 						<h3 class="font-medium">Kayin New Year</h3>
 					</div>
 					<p class="mt-3 text-sm leading-relaxed text-white/50">
@@ -600,21 +863,21 @@
 			<p class="text-sm text-white/30">
 				Data verified against official government announcements and DICA gazettes.
 			</p>
-			<p class="mt-3 flex items-center justify-center gap-2 text-xs text-white/20">
+			<p class="mt-3 flex items-center justify-center gap-2 text-xs text-white/30">
 				<span>Made with</span>
-				<Heart size={12} strokeWidth={2} class="text-rose-500/60" />
+				<Heart size={12} strokeWidth={2} class="text-rose-500/60" aria-hidden="true" />
 				<span>for Myanmar</span>
 				<span class="mx-2">|</span>
 				<span>{new Date().getFullYear()}</span>
 			</p>
-			<p class="mt-2 text-xs text-white/15">
+			<p class="mt-2 text-xs text-white/25">
 				<a
 					href="https://github.com/AungMyoKyaw/myanmar-public-holidays-2026"
 					target="_blank"
 					rel="noopener noreferrer"
 					class="inline-flex items-center gap-1.5 transition-colors hover:text-white/40"
 				>
-					<Github size={12} strokeWidth={1.5} />
+					<Github size={12} strokeWidth={1.5} aria-hidden="true" />
 					View source on GitHub
 				</a>
 			</p>

@@ -12,9 +12,66 @@
 		onViewCalendar?: (suggestion: LeaveSuggestion) => void;
 	} = $props();
 
+	let filterPanel = $state<HTMLElement>();
+	let firstFocusable = $state<HTMLElement>();
+	let lastFocusable = $state<HTMLElement>();
+
 	let suggestions: LeaveSuggestion[] = allLeaveSuggestions;
 
-	console.log('LeaveOptimizerView mounted, suggestions:', suggestions);
+	function handleFilterPanelKeydown(event: KeyboardEvent) {
+		if (event.key === 'Escape') {
+			showFilters = false;
+			return;
+		}
+
+		if (event.key === 'Tab') {
+			if (event.shiftKey) {
+				// Shift+Tab: if we're at the first element, go to last
+				if (document.activeElement === firstFocusable) {
+					event.preventDefault();
+					lastFocusable.focus();
+				}
+			} else {
+				// Tab: if we're at the last element, go to first
+				if (document.activeElement === lastFocusable) {
+					event.preventDefault();
+					firstFocusable.focus();
+				}
+			}
+		}
+	}
+
+	$effect(() => {
+		if (showFilters && filterPanel) {
+			// Get all focusable elements in the panel
+			const focusableElements = filterPanel.querySelectorAll(
+				'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+			);
+
+			if (focusableElements.length > 0) {
+				firstFocusable = focusableElements[0] as HTMLElement;
+				lastFocusable = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+				// Focus the first element when panel opens
+				setTimeout(() => firstFocusable.focus(), 100);
+			}
+
+			// Add keydown listener
+			document.addEventListener('keydown', handleFilterPanelKeydown);
+
+			return () => {
+				document.removeEventListener('keydown', handleFilterPanelKeydown);
+			};
+		} else if (!showFilters) {
+			// When panel closes, return focus to the filter toggle button
+			setTimeout(() => {
+				const filterToggle = document.querySelector('[aria-label="Toggle filters"]') as HTMLElement;
+				if (filterToggle) {
+					filterToggle.focus();
+				}
+			}, 100);
+		}
+	});
 
 	// Filter and sort state
 	let sortBy = $state<'efficiency' | 'days' | 'chronological'>('efficiency');
@@ -192,13 +249,15 @@
 								{sortBy === sortOption
 								? 'bg-amber-500/20 text-amber-400'
 								: 'text-white/40 hover:bg-white/5 hover:text-white/70'}"
+							aria-pressed={sortBy === sortOption}
+							aria-label={getSortLabel(sortOption)}
 						>
 							{#if sortOption === 'efficiency'}
-								<TrendingUp size={14} strokeWidth={1.5} />
+								<TrendingUp size={14} strokeWidth={1.5} aria-hidden="true" />
 							{:else if sortOption === 'days'}
-								<CalendarDays size={14} strokeWidth={1.5} />
+								<CalendarDays size={14} strokeWidth={1.5} aria-hidden="true" />
 							{:else}
-								<Clock size={14} strokeWidth={1.5} />
+								<Clock size={14} strokeWidth={1.5} aria-hidden="true" />
 							{/if}
 							<span class="hidden sm:inline">{getSortLabel(sortOption)}</span>
 						</button>
@@ -210,8 +269,11 @@
 			<button
 				onclick={() => (showFilters = !showFilters)}
 				class="flex items-center gap-2 rounded-lg border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-sm font-medium text-white/70 transition-all hover:border-white/20 hover:bg-white/10 hover:text-white"
+				aria-pressed={showFilters}
+				aria-expanded={showFilters}
+				aria-label="Toggle filters"
 			>
-				<SlidersHorizontal size={16} strokeWidth={1.5} />
+				<SlidersHorizontal size={16} strokeWidth={1.5} aria-hidden="true" />
 				Filters
 				{#if maxLeaveDays !== null || minEfficiency !== null || excludeAmbitious || selectedMonths.length > 0}
 					<span class="ml-1 h-2 w-2 rounded-full bg-amber-400"></span>
@@ -223,6 +285,7 @@
 	<!-- Filters Panel -->
 	{#if showFilters}
 		<div
+			bind:this={filterPanel}
 			class="animate-fade-in-up rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5 opacity-0"
 			style="animation-delay: 200ms"
 		>
@@ -246,8 +309,9 @@
 							<button
 								onclick={() => (maxLeaveDays = null)}
 								class="flex items-center justify-center rounded-lg bg-white/10 px-2 text-white/40 hover:text-white"
+								aria-label="Clear max leave days filter"
 							>
-								<X size={16} strokeWidth={2} />
+								<X size={16} strokeWidth={2} aria-hidden="true" />
 							</button>
 						{/if}
 					</div>
@@ -273,8 +337,9 @@
 							<button
 								onclick={() => (minEfficiency = null)}
 								class="flex items-center justify-center rounded-lg bg-white/10 px-2 text-white/40 hover:text-white"
+								aria-label="Clear min efficiency filter"
 							>
-								<X size={16} strokeWidth={2} />
+								<X size={16} strokeWidth={2} aria-hidden="true" />
 							</button>
 						{/if}
 					</div>
@@ -316,6 +381,8 @@
 									{selectedMonths.includes(month)
 									? 'border-amber-500/40 bg-amber-500/20 text-amber-400'
 									: 'border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-white/20 hover:bg-white/10 hover:text-white'}"
+								aria-pressed={selectedMonths.includes(month)}
+								aria-label={`Filter by ${month}`}
 							>
 								{month}
 							</button>
@@ -340,10 +407,19 @@
 		</div>
 	{/if}
 
+	<!-- Live region for filter results announcements -->
+	<div aria-live="polite" aria-atomic="true" class="sr-only">
+		{#if filteredSuggestions().length !== suggestions.length}
+			{filteredSuggestions().length === 0
+				? 'No leave suggestions found matching your current filters'
+				: `Showing ${filteredSuggestions().length} of ${suggestions.length} leave suggestions`}
+		{/if}
+	</div>
+
 	<!-- Suggestions Grid -->
 	{#if filteredSuggestions().length > 0}
 		<div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3" style="animation-delay: 400ms">
-			{#each filteredSuggestions() as suggestion, i (suggestion.id)}
+			{#each filteredSuggestions() as suggestion, i (i)}
 				<div class="animate-fade-in-up opacity-0" style="animation-delay: {i * 100}ms">
 					<LeaveSuggestionCard {suggestion} onViewCalendar={handleViewCalendar} />
 				</div>
@@ -356,9 +432,9 @@
 			style="animation-delay: 400ms"
 		>
 			<div
-				class="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/[0.04] text-white/20"
+				class="mb-6 flex h-20 w-20 items-center justify-center rounded-2xl bg-white/[0.04] text-white/40"
 			>
-				<Filter size={40} strokeWidth={1} />
+				<Filter size={40} strokeWidth={1} aria-hidden="true" />
 			</div>
 			<h3 class="font-display text-xl text-white/70">No suggestions found</h3>
 			<p class="mt-2 text-sm text-white/40">Try adjusting your filters to see more options</p>
@@ -366,9 +442,17 @@
 				onclick={clearFilters}
 				class="mt-6 flex items-center gap-2 rounded-xl border border-amber-500/30 bg-amber-500/10 px-5 py-2.5 text-sm font-medium text-amber-400 transition-all hover:bg-amber-500/15"
 			>
-				<X size={16} strokeWidth={2} />
+				<X size={16} strokeWidth={2} aria-hidden="true" />
 				Clear filters
 			</button>
+		</div>
+
+		<!-- Live region for empty filter results -->
+		<div aria-live="assertive" aria-atomic="true" class="sr-only">
+			{#if filteredSuggestions().length === 0 && suggestions.length > 0}
+				No leave suggestions found matching your current filters. Try adjusting your filter
+				criteria.
+			{/if}
 		</div>
 	{/if}
 </div>

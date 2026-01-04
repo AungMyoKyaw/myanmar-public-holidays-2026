@@ -48,15 +48,22 @@
 		<div class="flex items-start gap-3">
 			<div
 				class="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl {colors.bg} {colors.text} transition-transform duration-300 group-hover:scale-105"
+				aria-hidden="true"
 			>
 				<HolidayIcon name={holiday.iconName} size={22} strokeWidth={1.75} />
 			</div>
 			<div class="min-w-0 flex-1">
-				<h3 class="font-display text-lg leading-tight text-white/95 sm:text-xl">
+				<h3
+					class="font-display text-lg leading-tight text-white/95 sm:text-xl"
+					id="holiday-{holiday.id}-title"
+				>
 					{holiday.name}
 				</h3>
 				{#if holiday.nameMyanmar}
-					<p class="font-myanmar mt-1 truncate text-sm text-white/50">
+					<p
+						class="font-myanmar mt-1 truncate text-sm text-white/50"
+						aria-describedby="holiday-{holiday.id}-title"
+					>
 						{holiday.nameMyanmar}
 					</p>
 				{/if}
@@ -64,23 +71,26 @@
 		</div>
 
 		<!-- Date info -->
+		<h4 class="sr-only">Date Information</h4>
 		<div class="mt-5 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
 			<div class="flex items-center gap-2 text-white/60">
-				<Calendar size={15} strokeWidth={1.5} class="text-white/40" />
+				<Calendar size={15} strokeWidth={1.5} class="text-white/40" aria-hidden="true" />
 				<span>{formatDateRange(holiday)}</span>
 			</div>
-			<span class="hidden text-white/20 sm:inline">|</span>
+			<span class="hidden text-white/30 sm:inline">|</span>
 			<div class="flex items-center gap-2 text-white/50">
-				<Clock size={14} strokeWidth={1.5} class="text-white/35" />
+				<Clock size={14} strokeWidth={1.5} class="text-white/35" aria-hidden="true" />
 				<span>{holiday.day}</span>
 			</div>
 		</div>
 
 		<!-- Days badge and lunar indicator -->
+		<h4 class="sr-only">Holiday Details</h4>
 		<div class="mt-4 flex flex-wrap items-center gap-3">
 			{#if days > 1}
 				<div
 					class="inline-flex items-center gap-2 rounded-lg bg-white/[0.06] px-3 py-1.5 backdrop-blur-sm"
+					aria-label="{days} day holiday duration"
 				>
 					<span class="text-lg font-semibold text-white">{days}</span>
 					<span class="text-xs tracking-wide text-white/50 uppercase">days</span>
@@ -91,7 +101,7 @@
 				<div
 					class="inline-flex items-center gap-1.5 rounded-lg bg-amber-500/10 px-2.5 py-1.5 text-xs text-amber-400/90"
 				>
-					<Moon size={13} strokeWidth={2} />
+					<Moon size={13} strokeWidth={2} aria-hidden="true" />
 					<span>Lunar dependent</span>
 				</div>
 			{/if}
