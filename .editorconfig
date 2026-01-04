@@ -12,43 +12,63 @@ trim_trailing_whitespace = true
 indent_style = space
 indent_size = 2
 
+# YAML files (GitHub Actions, config)
+[*.{yml,yaml}]
+indent_size = 2
+
 # JSON files
 [*.json]
 indent_size = 2
 
-# Markdown files
+# Markdown files - preserve trailing spaces for line breaks
 [*.md]
 trim_trailing_whitespace = false
-indent_size = 2
-
-# YAML files
-[*.{yml,yaml}]
-indent_size = 2
-
-# HTML files
-[*.{html,htm}]
-indent_size = 2
-
-# CSS/SCSS files
-[*.{css,scss}]
-indent_size = 2
-
-# JavaScript/TypeScript files
-[*.{js,ts,jsx,tsx,mjs,cjs}]
-indent_size = 2
-
-# Svelte files
-[*.svelte]
 indent_size = 2
 
 # Shell scripts
 [*.sh]
 end_of_line = lf
 
-# Makefiles
+# Makefiles require tabs
 [Makefile]
 indent_style = tab
 
-# Package files (tabs for alignment)
-[*.{workflow,yml}]
+# HTML files
+[*.{html,htm}]
+indent_size = 2
+
+# CSS/SCSS/SASS/LESS files
+[*.{css,scss,sass,less}]
+indent_size = 2
+
+# JavaScript/TypeScript files
+[*.{js,jsx,ts,tsx,mjs,cjs}]
+indent_size = 2
+
+# Svelte files
+[*.svelte]
+indent_size = 2
+
+# XML files
+[*.{xml,xsl,xslt}]
+indent_size = 2
+
+# Config files
+[*.{conf,config,in,ini,gitconfig}]
+indent_size = 2
+
+# Docker files
+[Dockerfile*]
+indent_size = 2
+
+# TypeScript definition files
+[*.d.ts]
+indent_size = 2
+
+# Vitest test files
+[*.test.{ts,js}]
+indent_size = 2
+
+# Build configuration files
+[{vite.config.ts,svelte.config.js,eslint.config.js,tsconfig.json}]
 indent_size = 2
