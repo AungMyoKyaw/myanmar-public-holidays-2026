@@ -26,7 +26,7 @@ export const translations = {
 		share: 'Share',
 		takeDaysGetDays: (leave: number, total: number) => `Take ${leave} days, get ${total} days off`,
 		takeDaysGetDaysMyanmar: (leave: number, total: number) =>
-			`ရက် ${leave} ယူပြီး ရက် ${total} အနားရ`,
+			`${leave} ရက် ယူပြီး ${total} ရက် အနားရ`,
 		freeBreak: 'Take 0 days, get {days} days off (FREE!)',
 		freeBreakMyanmar: '{days} ရက် အနားရ (အခမဲ့!)'
 	},
@@ -47,25 +47,25 @@ export const translations = {
 			title: 'New Year Bridge',
 			titleMyanmar: 'နှစ်သစ်ကူး ကြားထဲအလုပ်ရက်',
 			savingsText: 'Take 2 days, get 7 days off',
-			savingsTextMyanmar: 'ရက် ၂ ယူပြီး ရက် ၇ အနားရ'
+			savingsTextMyanmar: '၂ ရက် ယူပြီး ၇ ရက် အနားရ'
 		},
 		'thingyan-extension': {
 			title: 'Thingyan Super Break',
 			titleMyanmar: 'သင်္ကြန် စူပါအနားရက်',
 			savingsText: 'Take 5 days, get 16 days off',
-			savingsTextMyanmar: 'ရက် ၅ ယူပြီး ရက် ၁၆ အနားရ'
+			savingsTextMyanmar: '၅ ရက် ယူပြီး ၁၆ ရက် အနားရ'
 		},
 		'thadingyut-extension': {
 			title: 'Thadingyut Long Weekend',
 			titleMyanmar: 'သီတင်းကျွတ် ရက်သားရှည်',
 			savingsText: 'Take 3 days, get 9 days off',
-			savingsTextMyanmar: 'ရက် ၃ ယူပြီး ရက် ၉ အနားရ'
+			savingsTextMyanmar: '၃ ရက် ယူပြီး ၉ ရက် အနားရ'
 		},
 		'december-mega-break': {
 			title: 'December Mega Break',
 			titleMyanmar: 'ဒီဇင်ဘာ စူပါအနားရက်',
 			savingsText: 'Take 15 days, get 25 days off',
-			savingsTextMyanmar: 'ရက် ၁၅ ယူပြီး ရက် ၂၅ အနားရ'
+			savingsTextMyanmar: '၁၅ ရက် ယူပြီး ၂၅ ရက် အနားရ'
 		}
 	}
 } as const;

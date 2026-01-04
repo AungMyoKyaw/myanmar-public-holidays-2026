@@ -140,7 +140,7 @@ function findShortBridges(holidays: Holiday[]): LeaveSuggestion[] {
 			strategy: 'bridge',
 			difficulty: 'easy',
 			savingsText: 'Take 2 days, get 7 days off',
-			savingsTextMyanmar: 'ရက် ၂ ယူပြီး ရက် ၇ အနားရ',
+			savingsTextMyanmar: '၂ ရက် ယူပြီး ၇ ရက် အနားရ',
 			primaryMonth: 'January',
 			monthsSpanned: ['January'],
 			isBestValue: false
@@ -171,7 +171,7 @@ function findExtensions(holidays: Holiday[]): LeaveSuggestion[] {
 			strategy: 'extension',
 			difficulty: 'moderate',
 			savingsText: 'Take 5 days, get 16 days off',
-			savingsTextMyanmar: 'ရက် ၅ ယူပြီး ရက် ၁၆ အနားရ',
+			savingsTextMyanmar: '၅ ရက် ယူပြီး ၁၆ ရက် အနားရ',
 			primaryMonth: 'April',
 			monthsSpanned: ['April'],
 			isBestValue: true
@@ -196,7 +196,7 @@ function findExtensions(holidays: Holiday[]): LeaveSuggestion[] {
 			strategy: 'extension',
 			difficulty: 'easy',
 			savingsText: 'Take 3 days, get 9 days off',
-			savingsTextMyanmar: 'ရက် ၃ ယူပြီး ရက် ၉ အနားရ',
+			savingsTextMyanmar: '၃ ရက် ယူပြီး ၉ ရက် အနားရ',
 			primaryMonth: 'October',
 			monthsSpanned: ['October', 'November'],
 			isBestValue: false
@@ -235,7 +235,7 @@ function findAmbitiousBreaks(holidays: Holiday[]): LeaveSuggestion[] {
 			strategy: 'ambitious',
 			difficulty: 'ambitious',
 			savingsText: 'Take 15 days, get 25 days off',
-			savingsTextMyanmar: 'ရက် ၁၅ ယူပြီး ရက် ၂၅ အနားရ',
+			savingsTextMyanmar: '၁၅ ရက် ယူပြီး ၂၅ ရက် အနားရ',
 			primaryMonth: 'December',
 			monthsSpanned: ['December'],
 			isBestValue: false
