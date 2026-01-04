@@ -148,9 +148,7 @@
 		<div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
 			<div>
 				<h2 class="font-display text-2xl text-white/90 sm:text-3xl">Smart Leave Planner</h2>
-				<p class="font-myanmar mt-2 text-base text-white/40">
-					အားလပ်ရက်စီစဉ်ရေးအတွက် အတိုင်းအတာ အကြံပြုချက်များ
-				</p>
+				<p class="font-myanmar mt-2 text-base text-white/40">အားလပ်ရက်စီစဉ်ရေး</p>
 				<p class="mt-1 text-sm text-white/50">
 					Maximize your 2026 holidays by strategically taking leave around public holidays
 				</p>
