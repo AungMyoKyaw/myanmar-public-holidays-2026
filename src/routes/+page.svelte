@@ -23,7 +23,8 @@
 		Sparkles,
 		Heart,
 		TreePine,
-		X
+		X,
+		Github
 	} from 'lucide-svelte';
 
 	let searchQuery = $state('');
@@ -537,6 +538,17 @@
 				<span>for Myanmar</span>
 				<span class="mx-2">|</span>
 				<span>{new Date().getFullYear()}</span>
+			</p>
+			<p class="mt-2 text-xs text-white/15">
+				<a
+					href="https://github.com/AungMyoKyaw/myanmar-public-holidays-2026"
+					target="_blank"
+					rel="noopener noreferrer"
+					class="inline-flex items-center gap-1.5 transition-colors hover:text-white/40"
+				>
+					<Github size={12} strokeWidth={1.5} />
+					View source on GitHub
+				</a>
 			</p>
 		</footer>
 	</main>
