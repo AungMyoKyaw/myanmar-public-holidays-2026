@@ -9,7 +9,15 @@
 	import HolidayIcon from './HolidayIcon.svelte';
 	import { Building2, AlertCircle, Moon, Clock } from 'lucide-svelte';
 
-	let { holidays, year = 2026 }: { holidays: Holiday[]; year?: number } = $props();
+	let {
+		holidays,
+		year = 2026,
+		highlightedDateRange
+	}: {
+		holidays: Holiday[];
+		year?: number;
+		highlightedDateRange?: { start: string; end: string } | null;
+	} = $props();
 
 	const months = [
 		'January',
@@ -60,6 +68,15 @@
 		return dayOfWeek === 0 || dayOfWeek === 6;
 	}
 
+	function isInHighlightedRange(month: number, day: number): boolean {
+		if (!highlightedDateRange) return false;
+		const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+		const checkDate = new Date(dateStr);
+		const startDate = new Date(highlightedDateRange.start);
+		const endDate = new Date(highlightedDateRange.end);
+		return checkDate >= startDate && checkDate <= endDate;
+	}
+
 	let selectedHoliday = $state<Holiday | null>(null);
 	let selectedSubstituteDay = $state<SubstituteWorkDay | null>(null);
 	let tooltipPosition = $state({ x: 0, y: 0 });
@@ -84,6 +101,41 @@
 	function getMonthSubstituteDays(monthIndex: number): SubstituteWorkDay[] {
 		return substituteWorkDays.filter((s) => new Date(s.date).getMonth() === monthIndex);
 	}
+
+	function getHighlightedMonth(): number | null {
+		if (!highlightedDateRange) return null;
+
+		// Find the first month that contains any highlighted dates
+		for (let monthIndex = 0; monthIndex < 12; monthIndex++) {
+			const daysInMonth = getDaysInMonth(monthIndex, year);
+			for (let day = 1; day <= daysInMonth; day++) {
+				if (isInHighlightedRange(monthIndex, day)) {
+					return monthIndex;
+				}
+			}
+		}
+		return null;
+	}
+
+	// Auto-scroll to highlighted month when range changes
+	$effect(() => {
+		if (highlightedDateRange) {
+			const highlightedMonth = getHighlightedMonth();
+			if (highlightedMonth !== null) {
+				// Small delay to ensure DOM is updated
+				setTimeout(() => {
+					const monthElement = document.getElementById(`month-${highlightedMonth}`);
+					if (monthElement) {
+						monthElement.scrollIntoView({
+							behavior: 'smooth',
+							block: 'start',
+							inline: 'nearest'
+						});
+					}
+				}, 100);
+			}
+		}
+	});
 </script>
 
 <div class="calendar-container">
@@ -98,6 +150,7 @@
 			{@const monthSubstituteDays = getMonthSubstituteDays(monthIndex)}
 
 			<div
+				id={`month-${monthIndex}`}
 				class="card-elevated group/month animate-fade-in-up rounded-2xl p-4 opacity-0 sm:p-5"
 				style="animation-delay: {monthIndex * 50}ms"
 			>
@@ -143,19 +196,22 @@
 						{@const substituteDay = getSubstituteWorkDay(monthIndex, day)}
 						{@const hasHoliday = dayHolidays.length > 0}
 						{@const hasSubstitute = !!substituteDay}
+						{@const isHighlighted = isInHighlightedRange(monthIndex, day)}
 						{@const primaryHoliday = dayHolidays[0]}
 						{@const colors = primaryHoliday ? categoryColors[primaryHoliday.category] : null}
 
 						<button
 							class="group relative aspect-square rounded-lg text-xs transition-all duration-200 sm:text-sm
 								{isToday(monthIndex, day) ? 'ring-2 ring-amber-500/70 ring-offset-1 ring-offset-[#0a0a0f]' : ''}
-								{hasSubstitute
-								? 'border border-orange-500/40 bg-orange-500/20 hover:z-10 hover:scale-110 hover:bg-orange-500/30'
-								: hasHoliday
-									? `${colors?.bg} ${colors?.border} border hover:z-10 hover:scale-110`
-									: isWeekend(dayOfWeek)
-										? 'text-rose-400/50 hover:bg-white/5'
-										: 'text-white/50 hover:bg-white/5'}"
+								{isHighlighted
+								? 'scale-105 animate-pulse-subtle bg-amber-500/20 font-bold ring-2 ring-amber-400/60 ring-offset-2 ring-offset-[#0a0a0f] hover:z-10 hover:scale-110 hover:bg-amber-500/30'
+								: hasSubstitute
+									? 'border border-orange-500/40 bg-orange-500/20 hover:z-10 hover:scale-110 hover:bg-orange-500/30'
+									: hasHoliday
+										? `${colors?.bg} ${colors?.border} border hover:z-10 hover:scale-110`
+										: isWeekend(dayOfWeek)
+											? 'text-rose-400/50 hover:bg-white/5'
+											: 'text-white/50 hover:bg-white/5'}"
 							onmouseenter={(e) => {
 								if (hasSubstitute) showSubstituteTooltip(substituteDay, e);
 								else if (hasHoliday) showTooltip(primaryHoliday, e);
@@ -167,11 +223,13 @@
 							}}
 						>
 							<span
-								class="flex h-full w-full items-center justify-center {hasSubstitute
-									? 'font-semibold text-orange-300'
-									: hasHoliday
-										? colors?.text + ' font-semibold'
-										: ''}"
+								class="flex h-full w-full items-center justify-center {isHighlighted
+									? 'font-bold text-amber-300'
+									: hasSubstitute
+										? 'font-semibold text-orange-300'
+										: hasHoliday
+											? colors?.text + ' font-semibold'
+											: ''}"
 							>
 								{day}
 							</span>

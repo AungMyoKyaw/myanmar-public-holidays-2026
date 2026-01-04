@@ -1,6 +1,7 @@
 <script lang="ts">
 	import HolidayCard from '$lib/components/HolidayCard.svelte';
 	import CalendarView from '$lib/components/CalendarView.svelte';
+	import LeaveOptimizerView from '$lib/components/LeaveOptimizerView.svelte';
 	import {
 		holidays,
 		getTotalHolidayDays,
@@ -8,6 +9,7 @@
 		formatDate,
 		type Holiday
 	} from '$lib/data/holidays';
+	import type { LeaveSuggestion } from '$lib/data/leaveOptimizer';
 	import { SvelteMap } from 'svelte/reactivity';
 	import {
 		Search,
@@ -25,7 +27,8 @@
 	} from 'lucide-svelte';
 
 	let searchQuery = $state('');
-	let viewMode = $state<'grid' | 'timeline' | 'calendar'>('calendar');
+	let viewMode = $state<'grid' | 'timeline' | 'calendar' | 'optimizer'>('calendar');
+	let highlightedDateRange = $state<{ start: string; end: string } | null>(null);
 
 	// Filter holidays based on search query
 	const filteredHolidays = $derived(
@@ -64,15 +67,29 @@
 	function clearSearch() {
 		searchQuery = '';
 	}
+
+	function handleViewCalendarFromOptimizer(suggestion: LeaveSuggestion) {
+		highlightedDateRange = { start: suggestion.startDate, end: suggestion.endDate };
+		viewMode = 'calendar';
+		// Scroll to top smoothly
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	// Clear highlighting when switching away from calendar view
+	$effect(() => {
+		if (viewMode !== 'calendar') {
+			highlightedDateRange = null;
+		}
+	});
 </script>
 
 <svelte:head>
 	<!-- Primary Meta Tags -->
-	<title>Myanmar Public Holidays 2026 🇲🇲 | 16-18 Holidays · 30+ Days Off</title>
-	<meta name="title" content="Myanmar Public Holidays 2026 🇲🇲 | 16-18 Holidays · 30+ Days Off" />
+	<title>Myanmar Public Holidays 2026 | 16-18 Holidays · 30+ Days Off</title>
+	<meta name="title" content="Myanmar Public Holidays 2026 | 16-18 Holidays · 30+ Days Off" />
 	<meta
 		name="description"
-		content="📅 Complete calendar of Myanmar's official public holidays in 2026. Featuring 9-day Thingyan festival, Union Day, Independence Day & more. Interactive calendar view with search. မြန်မာ့ရုံးပိတ်ရက်များ ၂၀၂၆"
+		content="Complete calendar of Myanmar's official public holidays in 2026. Featuring 9-day Thingyan festival, Union Day, Independence Day & more. Interactive calendar view with search. မြန်မာ့ရုံးပိတ်ရက်များ ၂၀၂၆"
 	/>
 	<meta
 		name="keywords"
@@ -85,10 +102,10 @@
 	<!-- Open Graph / Facebook -->
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="https://aungmyokyaw.github.io/myanmar-public-holidays-2026/" />
-	<meta property="og:title" content="🇲🇲 Myanmar Public Holidays 2026 | Plan Your Year" />
+	<meta property="og:title" content="Myanmar Public Holidays 2026 | Plan Your Year" />
 	<meta
 		property="og:description"
-		content="📅 18 official holidays · 30+ days off · 9-day Thingyan festival (Apr 11-19). Interactive calendar with bilingual support. Perfect for planning your 2026! 🎉"
+		content="18 official holidays · 30+ days off · 9-day Thingyan festival (Apr 11-19). Interactive calendar with bilingual support. Perfect for planning your 2026!"
 	/>
 	<meta
 		property="og:image"
@@ -106,11 +123,11 @@
 	<meta name="twitter:url" content="https://aungmyokyaw.github.io/myanmar-public-holidays-2026/" />
 	<meta
 		name="twitter:title"
-		content="🇲🇲 Myanmar Public Holidays 2026 | 16-18 Holidays · 30+ Days Off"
+		content="Myanmar Public Holidays 2026 | 16-18 Holidays · 30+ Days Off"
 	/>
 	<meta
 		name="twitter:description"
-		content="📅 Complete calendar of Myanmar's 2026 holidays. 9-day Thingyan festival, interactive calendar view, bilingual support. Plan your year now! 🎉"
+		content="Complete calendar of Myanmar's 2026 holidays. 9-day Thingyan festival, interactive calendar view, bilingual support. Plan your year now!"
 	/>
 	<meta name="twitter:image" content="https://myanmar-holidays-2026.vercel.app/og-image.png" />
 	<meta name="twitter:image:alt" content="Myanmar Public Holidays 2026 Calendar" />
@@ -278,11 +295,22 @@
 					<List size={16} strokeWidth={1.5} />
 					<span class="hidden sm:inline">Timeline</span>
 				</button>
+				<button
+					onclick={() => (viewMode = 'optimizer')}
+					class="flex items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all {viewMode ===
+					'optimizer'
+						? 'bg-amber-500/20 text-amber-400'
+						: 'text-white/40 hover:text-white/70'}"
+					title="Leave Planner"
+				>
+					<CalendarCheck size={16} strokeWidth={1.5} />
+					<span class="hidden sm:inline">Leave Planner</span>
+				</button>
 			</div>
 		</div>
 
 		<!-- Results count -->
-		{#if filteredHolidays.length !== holidays.length && viewMode !== 'calendar'}
+		{#if filteredHolidays.length !== holidays.length && viewMode !== 'calendar' && viewMode !== 'optimizer'}
 			<div class="mb-6 flex animate-fade-in items-center gap-2 text-sm text-white/40 opacity-0">
 				<span>Showing</span>
 				<span class="font-medium text-white/60">{filteredHolidays.length}</span>
@@ -294,7 +322,7 @@
 
 		<!-- Calendar View -->
 		{#if viewMode === 'calendar'}
-			<CalendarView holidays={filteredHolidays} year={2026} />
+			<CalendarView holidays={filteredHolidays} year={2026} {highlightedDateRange} />
 		{:else if viewMode === 'grid'}
 			<!-- Grid View -->
 			<div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
@@ -304,7 +332,7 @@
 					</div>
 				{/each}
 			</div>
-		{:else}
+		{:else if viewMode === 'timeline'}
 			<!-- Timeline View -->
 			<div class="space-y-16">
 				{#each Array.from(holidaysByMonth.entries()) as [month, monthHolidays], monthIndex (month)}
@@ -341,6 +369,9 @@
 					</section>
 				{/each}
 			</div>
+		{:else}
+			<!-- Leave Optimizer View -->
+			<LeaveOptimizerView onViewCalendar={handleViewCalendarFromOptimizer} />
 		{/if}
 
 		<!-- Empty state -->

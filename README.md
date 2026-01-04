@@ -2,7 +2,7 @@
 
 A beautifully designed web application displaying the complete list of official public holidays in Myanmar for the year 2026. Built with SvelteKit, featuring bilingual support (English/Myanmar), interactive calendar views, and a modern dark theme.
 
-**🔗 Live Demo:** [myanmar-public-holidays-2026](https://aungmyokyaw.github.io/myanmar-public-holidays-2026/)
+**Live Demo:** [myanmar-public-holidays-2026](https://aungmyokyaw.github.io/myanmar-public-holidays-2026/)
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
@@ -14,6 +14,7 @@ A beautifully designed web application displaying the complete list of official 
   - Calendar view with holiday indicators and tooltips
   - Grid view with detailed holiday cards
   - Timeline view for chronological navigation
+- **Leave Planner** - Smart suggestions to maximize your vacation time by strategically taking leave around public holidays
 - **Search & Filter** - Real-time search functionality
 - **Bilingual Support** - Full English and Myanmar language translations
 - **Responsive Design** - Optimized for mobile, tablet, and desktop
@@ -101,9 +102,14 @@ src/
 ├── lib/
 │   ├── components/
 │   │   ├── HolidayCard.svelte    # Holiday card component
-│   │   └── CalendarView.svelte   # Interactive calendar
+│   │   ├── CalendarView.svelte   # Interactive calendar
+│   │   ├── LeaveOptimizerView.svelte    # NEW: Smart leave planner
+│   │   └── LeaveSuggestionCard.svelte   # NEW: Leave suggestion cards
 │   ├── data/
-│   │   └── holidays.ts           # Holiday data & utilities
+│   │   ├── holidays.ts           # Holiday data & utilities
+│   │   └── leaveOptimizer.ts     # NEW: Leave optimization logic
+│   ├── i18n/
+│   │   └── translations.ts       # NEW: Bilingual text constants
 │   └── index.ts                  # Library exports
 └── app.d.ts              # TypeScript declarations
 ```
@@ -185,6 +191,45 @@ Holidays are categorized as follows:
 - **Lunar-Dependent Dates:** Eid al-Fitr and Deepavali are marked with \* (to be announced, subject to moon sighting)
 - **Weekend Policy:** Public holidays falling on Saturday or Sunday are NOT substituted with replacement holidays
 - **No Kayin New Year:** The holiday does not occur in 2026 (next one in early 2027)
+
+## Smart Leave Planner
+
+Maximize your 2026 vacation time with intelligent suggestions that analyze Myanmar's public holidays and recommend optimal leave periods.
+
+### Key Features
+
+- **Efficiency Analysis**: See exactly how many leave days you need to take to get maximum days off
+- **Strategic Suggestions**: Get personalized recommendations based on holiday patterns
+- **Multiple Strategies**: From "free" natural bridges to ambitious long-break extensions
+- **Advanced Filtering**: Filter by leave days required, efficiency ratio, difficulty, and months
+- **Interactive Planning**: Visual calendar integration and sharing capabilities
+
+### Top Suggestions for 2026
+
+1. **Thingyan Super Break** (Best Value)
+   - Take 5 days → Get 16 days off (3.2x efficiency)
+   - April 11-26, 2026
+   - Includes 9-day Thingyan festival
+
+2. **Union Day + Chinese New Year** (FREE!)
+   - Take 0 days → Get 6 days off
+   - February 12-17, 2026
+   - Natural holiday bridge
+
+3. **Labour Day Weekend** (FREE!)
+   - Take 0 days → Get 4 days off
+   - April 30 - May 3, 2026
+
+### How It Works
+
+The Leave Planner analyzes:
+
+- Official public holidays and their dates
+- Weekend patterns and substitute workdays
+- Natural bridges between holidays
+- Strategic leave placement for maximum efficiency
+
+Switch to the "Leave Planner" view to explore personalized vacation optimization strategies!
 
 ## License
 
