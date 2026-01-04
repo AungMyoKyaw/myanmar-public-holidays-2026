@@ -39,7 +39,7 @@ export const translations = {
 		},
 		'labour-weekend-natural': {
 			title: 'Labour Day Long Weekend',
-			titleMyanmar: 'အလုပ်သမားနေ့ ရက်သားရှည်',
+			titleMyanmar: 'အလုပ်သမားနေ့ ပိတ်ရက်ရှည်',
 			savingsText: 'Take 0 days, get 4 days off (FREE!)',
 			savingsTextMyanmar: '၄ ရက် အနားရ (အခမဲ့!)'
 		},
@@ -57,7 +57,7 @@ export const translations = {
 		},
 		'thadingyut-extension': {
 			title: 'Thadingyut Long Weekend',
-			titleMyanmar: 'သီတင်းကျွတ် ရက်သားရှည်',
+			titleMyanmar: 'သီတင်းကျွတ် ပိတ်ရက်ရှည်',
 			savingsText: 'Take 3 days, get 9 days off',
 			savingsTextMyanmar: '၃ ရက် ယူပြီး ၉ ရက် အနားရ'
 		},

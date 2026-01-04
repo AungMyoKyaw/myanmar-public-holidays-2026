@@ -185,7 +185,7 @@ function findExtensions(holidays: Holiday[]): LeaveSuggestion[] {
 		suggestions.push({
 			id: 'thadingyut-extension',
 			title: 'Thadingyut Long Weekend',
-			titleMyanmar: 'သီတင်းကျွတ် ရက်သားရှည်',
+			titleMyanmar: 'သီတင်းကျွတ် ပိတ်ရက်ရှည်',
 			leaveRequired: 3,
 			totalDaysOff: 9,
 			efficiency: 3.0,
